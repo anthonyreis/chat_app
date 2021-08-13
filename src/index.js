@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
 
         io.to(user.room).emit('message', generateMessage(user.username, message));
 
-        cb('Delivered');
+        cb();
     });
 
     socket.on('sendLocation', ({ lat, lon }, cb) => {
