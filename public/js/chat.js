@@ -4,6 +4,7 @@ const $messageForm = document.querySelector('#formMessage');
 const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendLocationButton = document.querySelector('#send-location');
+const $sendFileButton = document.querySelector('#send-file');
 const $messages = document.querySelector('#messages');
 
 // Templates
@@ -99,6 +100,10 @@ $sendLocationButton.addEventListener('click', () => {
             $sendLocationButton.removeAttribute('disabled');
         });
     });
+});
+
+$sendFileButton.addEventListener('click', () => {
+    socket.emit('sendFile');
 });
 
 socket.emit('join', { username, room }, (error) => {

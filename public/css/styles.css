@@ -39,11 +39,11 @@ input {
 
 button {
     cursor: pointer;
-    padding: 12px;
+    padding: 10px;
     background: #7C5CBF;
     border: none;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     transition: background .3s ease;
 }
 
@@ -76,6 +76,7 @@ button:disabled {
 
 .centered-form button {
     width: 100%;
+    border-radius: 2%;
 }
 
 .centered-form input {
@@ -147,13 +148,17 @@ button:disabled {
     padding: 24px;
 }
 
-.compose form {
+.compose input[type="file"] {
+    display: none;
+}
+
+.compose form#formMessage {
     display: flex;
     flex-grow: 1;
     margin-right: 16px;
 }
 
-.compose input {
+.compose input#message {
     border: 1px solid #eeeeee;
     width: 100%;
     padding: 12px;
@@ -161,8 +166,17 @@ button:disabled {
     flex-grow: 1;
 }
 
+.compose input[type="file"] {
+    display: none;
+}
+
 .compose button {
     font-size: 14px;
+    border-radius: 10%;
+}
+
+.compose button#send-location {
+    margin-right: 1%;
 }
 
 /* Chat Sidebar Styles */
