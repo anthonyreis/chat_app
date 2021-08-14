@@ -10,9 +10,12 @@ const generateLocationMessage = (username, url) => ({
     createdAt: new Date().getTime()
 });
 
-const generateFileMessage = (username, file) => ({
+const generateFileMessage = (username, file, preview, fileName, ext) => ({
     username,
     file,
+    preview,
+    fileName,
+    ext,
     createdAt: new Date().getTime()
 });
 

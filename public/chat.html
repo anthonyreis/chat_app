@@ -76,7 +76,11 @@
                 <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
-            <p><img src="data:image/jpg;base64,{{file}}" /></p>
+            <p><img src="data:image/png;base64,{{preview}}" /></p>
+            <span>
+                <a href="data:image/png;base64,{{file}}" download="{{fileName}}.{{ext}}">
+                    <img src="/img/download.png" width="75px" height="60px" style="margin-top: 0; padding: 0;"></a>
+            </span>
         </div>
     </script>
 

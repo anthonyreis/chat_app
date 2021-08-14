@@ -4,9 +4,11 @@ const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 const multer = require('multer');
+const sharp = require('sharp');
 const { generateMessage, generateLocationMessage, generateFileMessage } = require('./utils/messages');
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users');
+const { addUser, removeUser, getUser, getUsersInRoom, updateUser } = require('./utils/users');
 const { addRoom, removeRoom } = require('./utils/rooms');
+const { addFile, getUserFiles, getFiles } = require('./utils/files');
 
 const upload = multer({
     limits: {
@@ -17,7 +19,7 @@ const upload = multer({
             cb(new Error('Please upload an image (jpg, jpeg, png or pdf)'));
         }
 
-        cb(undefined, true);
+        cb(undefined, file.originalname);
     }
 });
 
@@ -31,10 +33,14 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
-app.post('/chat.html?', upload.single('upfile'), (req, res) => {
+app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
     const file = req.file.buffer;
+    const { 0: fileName, 1: ext } = req.file.originalname.split('.');
+    const buffer = await sharp(file).resize({ width: 200, height: 200 }).png().toBuffer();
 
-    res.send(file.toString('base64'));
+    res.send({ file: file.toString('base64'), preview: buffer.toString('base64'), fileName, ext });
+}, (error, req, res, next) => {
+    res.status(400).send(error.message);
 });
 
 io.on('connection', (socket) => {
@@ -81,10 +87,22 @@ io.on('connection', (socket) => {
         cb();
     });
 
-    socket.on('sendFile', (file) => {
+    socket.on('sendFile', ({ file, preview, fileName, ext }) => {
         const user = getUser(socket.id);
+        const fileBuffer = Buffer.from(file);
+        const userFiles = [
+            ...user.files,
+            {
+                file: fileBuffer,
+                fileName,
+                ext
+            }
+        ];
 
-        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file));
+        updateUser(user.id, { files: userFiles });
+        addFile(user.id, fileBuffer, fileName, ext);
+
+        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, preview, fileName, ext));
     });
 
     socket.on('disconnect', () => {

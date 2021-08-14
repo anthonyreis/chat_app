@@ -28,7 +28,7 @@ const addUser = ({ id, username, room }) => {
         };
     }
 
-    const user = { id, username, room };
+    const user = { id, username, room, files: [] };
     users.push(user);
 
     return { user };
@@ -40,6 +40,20 @@ const removeUser = (id) => {
     if (index != -1) {
         return users.splice(index, 1)[0];
     }
+};
+
+const updateUser = (id, updates) => {
+    const index = users.findIndex((user) => user.id === id);
+    const user = users[index];
+    const updateFields = Object.keys(updates);
+
+    updateFields.forEach((info) => {
+        user[info] = updates[info];
+    });
+
+    users[index] = user;
+
+    return user;
 };
 
 const getUser = (id) => {
@@ -58,5 +72,6 @@ module.exports = {
     addUser,
     removeUser,
     getUser,
-    getUsersInRoom
+    getUsersInRoom,
+    updateUser
 };

@@ -75,10 +75,13 @@ socket.on('locationMessage', ({ username, url, createdAt }) => {
     autoscroll();
 });
 
-socket.on('fileMessage', ({ file, username, createdAt }) => {
+socket.on('fileMessage', ({ file, preview, username, fileName, ext, createdAt }) => {
     const html = Mustache.render($fileTemplate, {
         file,
+        preview,
         username,
+        fileName,
+        ext,
         createdAt: moment(createdAt).format('HH:mm')
     });
     $messages.insertAdjacentHTML('beforeend', html);
