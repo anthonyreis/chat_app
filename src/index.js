@@ -3,9 +3,23 @@ const path = require('path');
 const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
-const { generateMessage, generateLocationMessage } = require('./utils/messages');
+const multer = require('multer');
+const { generateMessage, generateLocationMessage, generateFileMessage } = require('./utils/messages');
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users');
 const { addRoom, removeRoom } = require('./utils/rooms');
+
+const upload = multer({
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|pdf)$/)) {
+            cb(new Error('Please upload an image (jpg, jpeg, png or pdf)'));
+        }
+
+        cb(undefined, true);
+    }
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -16,6 +30,12 @@ const port = process.env.PORT;
 const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.static(publicDirectoryPath));
 app.use(express.json());
+
+app.post('/chat.html?', upload.single('upfile'), (req, res) => {
+    const file = req.file.buffer;
+
+    res.send(file.toString('base64'));
+});
 
 io.on('connection', (socket) => {
     socket.on('join', ({ username, room }, cb) => {
@@ -59,6 +79,12 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`));
 
         cb();
+    });
+
+    socket.on('sendFile', (file) => {
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file));
     });
 
     socket.on('disconnect', () => {

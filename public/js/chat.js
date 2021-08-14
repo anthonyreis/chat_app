@@ -6,19 +6,20 @@ const $messageFormButton = $messageForm.querySelector('button');
 const $sendLocationButton = document.querySelector('#send-location');
 const $sendFileContainer = document.querySelector('#fileBtn');
 const $sendFileButton = document.querySelector('#upfile');
+const $fileForm = document.querySelector('#fileForm');
 const $messages = document.querySelector('#messages');
 
 // Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
 const $locationTemplate = document.querySelector('#location-template').innerHTML;
 const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
+const $fileTemplate = document.querySelector('#file-template').innerHTML;
 
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
 const setButtonSize = () => {
     const sizes = getComputedStyle($sendFileContainer);
-    console.log(sizes);
 
     $sendFileButton.style.width = sizes.width;
     $sendFileButton.style.height = sizes.height;
@@ -74,6 +75,16 @@ socket.on('locationMessage', ({ username, url, createdAt }) => {
     autoscroll();
 });
 
+socket.on('fileMessage', ({ file, username, createdAt }) => {
+    const html = Mustache.render($fileTemplate, {
+        file,
+        username,
+        createdAt: moment(createdAt).format('HH:mm')
+    });
+    $messages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
+});
+
 socket.on('roomData', ({ room, users }) => {
     setButtonSize();
     const html = Mustache.render($sidebarTemplate, {
@@ -119,11 +130,22 @@ $sendLocationButton.addEventListener('click', () => {
     });
 });
 
-/*$sendFileButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log('Enviar arquivo');
-    socket.emit('sendFile');
-});*/
+$sendFileButton.addEventListener('change', () => {
+    const url = 'chat.html';
+    const formData = new FormData($fileForm);
+
+    $.ajax({
+        type: 'POST',
+        url,
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        success(data) {
+            socket.emit('sendFile', data);
+        }
+    });
+});
 
 socket.emit('join', { username, room }, (error) => {
     if (error) {
