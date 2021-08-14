@@ -18,6 +18,7 @@ body {
     line-height: 1.4;
     color: #333333;
     font-family: Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -37,7 +38,7 @@ input {
     outline: none;
 }
 
-button {
+button, #fileBtn {
     cursor: pointer;
     padding: 10px;
     background: #7C5CBF;
@@ -148,10 +149,6 @@ button:disabled {
     padding: 24px;
 }
 
-.compose input[type="file"] {
-    display: none;
-}
-
 .compose form#formMessage {
     display: flex;
     flex-grow: 1;
@@ -166,10 +163,6 @@ button:disabled {
     flex-grow: 1;
 }
 
-.compose input[type="file"] {
-    display: none;
-}
-
 .compose button {
     font-size: 14px;
     border-radius: 10%;
@@ -178,6 +171,23 @@ button:disabled {
 .compose button#send-location {
     margin-right: 1%;
 }
+
+.compose#fileBtn {
+    position: relative;
+    border-radius: 10%;
+}
+
+.compose input#upfile {
+    position: absolute;
+}
+
+#file-upload-button {
+    cursor: pointer;
+}
+
+/*input[type="file"] {
+    visibility:hidden;
+}*/
 
 /* Chat Sidebar Styles */
 

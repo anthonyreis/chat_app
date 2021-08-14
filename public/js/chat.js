@@ -4,7 +4,8 @@ const $messageForm = document.querySelector('#formMessage');
 const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendLocationButton = document.querySelector('#send-location');
-const $sendFileButton = document.querySelector('#send-file');
+const $sendFileContainer = document.querySelector('#fileBtn');
+const $sendFileButton = document.querySelector('#upfile');
 const $messages = document.querySelector('#messages');
 
 // Templates
@@ -14,6 +15,21 @@ const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
+const setButtonSize = () => {
+    const sizes = getComputedStyle($sendFileContainer);
+    console.log(sizes);
+
+    $sendFileButton.style.width = sizes.width;
+    $sendFileButton.style.height = sizes.height;
+    $sendFileButton.style.right = '24px';
+    $sendFileButton.style.bottom = '24px';
+    $sendFileButton.style.padding = sizes.padding;
+    $sendFileButton.style.fontSize = sizes.fontSize;
+    $sendFileButton.style.lineHeight = sizes.lineHeight;
+    $sendFileButton.style.boxSizing = sizes.boxSizing;
+    $sendFileButton.style.cursor = 'pointer';
+};
 
 const autoscroll = () => {
     // New message element
@@ -59,6 +75,7 @@ socket.on('locationMessage', ({ username, url, createdAt }) => {
 });
 
 socket.on('roomData', ({ room, users }) => {
+    setButtonSize();
     const html = Mustache.render($sidebarTemplate, {
         room: room.charAt(0).toUpperCase() + room.substr(1),
         users
@@ -102,9 +119,11 @@ $sendLocationButton.addEventListener('click', () => {
     });
 });
 
-$sendFileButton.addEventListener('click', () => {
+/*$sendFileButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Enviar arquivo');
     socket.emit('sendFile');
-});
+});*/
 
 socket.emit('join', { username, room }, (error) => {
     if (error) {
