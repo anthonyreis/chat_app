@@ -2,13 +2,13 @@ const http = require('http');
 const path = require('path');
 const express = require('express');
 const socketio = require('socket.io');
-const Filter = require('bad-words');
 const multer = require('multer');
 const sharp = require('sharp');
-const { generateMessage, generateLocationMessage, generateFileMessage } = require('./utils/messages');
-const { addUser, removeUser, getUser, getUsersInRoom, updateUser } = require('./utils/users');
-const { addRoom, removeRoom } = require('./utils/rooms');
-const { addFile, getUserFiles, getFiles } = require('./utils/files');
+const sendMessage = require('./triggers/sendMessage');
+const sendLocationMessage = require('./triggers/sendLocationMessage');
+const sendFile = require('./triggers/sendFile');
+const join = require('./triggers/join');
+const disconnect = require('./triggers/disconnect');
 
 const upload = multer({
     limits: {
@@ -19,7 +19,7 @@ const upload = multer({
             cb(new Error('Please upload an image (jpg, jpeg, png or pdf)'));
         }
 
-        cb(undefined, file.originalname);
+        cb(undefined, true);
     }
 });
 
@@ -36,21 +36,37 @@ app.use(express.json());
 app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
     try {
         const file = req.file.buffer;
-        const { 0: fileName, 1: ext } = req.file.originalname.split('.');
         const mimeType = req.file.mimetype;
+
+        const { 0: fileName, 1: ext } = req.file.originalname.split('.');
+
         const resizableExt = ['jpg', 'jpeg', 'png'];
 
         if (!resizableExt.includes(ext)) {
-            return res.send({ file: file.toString('base64'), preview: file.toString('base64'), mimeType, fileName, ext });
+            return res.send({
+                file: file.toString('base64'),
+                preview: file.toString('base64'),
+                mimeType,
+                fileName,
+                ext
+            });
         }
 
         const buffer = await sharp(file)
             .resize(200, 200, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true,
-            }).png().toBuffer();
+            })
+            .png()
+            .toBuffer();
 
-        res.send({ file: file.toString('base64'), preview: buffer.toString('base64'), mimeType, fileName, ext });
+        res.send({
+            file: file.toString('base64'),
+            preview: buffer.toString('base64'),
+            mimeType,
+            fileName,
+            ext
+        });
     } catch (e) {
         console.log(e);
         res.status(500).send(e.message);
@@ -60,88 +76,15 @@ app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    socket.on('join', ({ username, room }, cb) => {
-        const { error, user } = addUser({ id: socket.id, username, room });
+    socket.on('join', ({ username, room }, cb) => join(username, room, cb, socket, io));
 
-        if (error) {
-            return cb(error);
-        }
+    socket.on('sendMessage', (message, cb) => sendMessage(message, cb, socket));
 
-        socket.join(user.room);
-        addRoom(user.room);
+    socket.on('sendLocation', ({ lat, lon }, cb) => sendLocationMessage(lat, lon, cb, socket));
 
-        socket.emit('message', generateMessage('Admin', 'Welcome!'));
-        socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`));
+    socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => sendFile(file, mimeType, preview, fileName, ext, socket));
 
-        io.to(user.room).emit('roomData', {
-            room: user.room,
-            users: getUsersInRoom(user.room)
-        });
-
-        cb();
-    });
-
-    socket.on('sendMessage', (message, cb) => {
-        const user = getUser(socket.id);
-
-        const filter = new Filter();
-
-        if (filter.isProfane(message)) {
-            return cb('Profanity is not allowed');
-        }
-
-        socket.broadcast.to(user.room).emit('message', generateMessage(user.username, message));
-        socket.emit('message', generateMessage(user.username, message, 1));
-
-        cb();
-    });
-
-    socket.on('sendLocation', ({ lat, lon }, cb) => {
-        const user = getUser(socket.id);
-
-        socket.broadcast.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`));
-        socket.emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`, 1));
-
-        cb();
-    });
-
-    socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => {
-        const user = getUser(socket.id);
-        const fileBuffer = Buffer.from(file);
-        const userFiles = [
-            ...user.files,
-            {
-                file: fileBuffer,
-                mimeType,
-                fileName,
-                ext
-            }
-        ];
-
-        updateUser(user.id, { files: userFiles });
-        addFile(user.id, fileBuffer, mimeType, fileName, ext);
-
-        socket.broadcast.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext));
-        socket.emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext, 1));
-    });
-
-    socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
-
-        if (user) {
-            io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`));
-            io.to(user.room).emit('roomData', {
-                room: user.room,
-                users: getUsersInRoom(user.room)
-            });
-
-            const qtdUsers = getUsersInRoom(user.room);
-
-            if (qtdUsers.length === 0) {
-                removeRoom(user.room);
-            }
-        }
-    });
+    socket.on('disconnect', () => disconnect(io, socket));
 });
 
 server.listen(port, () => {
