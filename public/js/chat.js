@@ -87,6 +87,14 @@ socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, cr
     });
     $messages.insertAdjacentHTML('beforeend', html);
     autoscroll();
+
+    const child = $messages.lastElementChild.lastElementChild;
+
+    if (ext === 'pdf') {
+        child.style.marginLeft = '248px';
+    } else {
+        child.style.marginLeft = '170px';
+    }
 });
 
 socket.on('roomData', ({ room, users }) => {

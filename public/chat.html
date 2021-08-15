@@ -26,7 +26,7 @@
                         title="Send Location"></button>
 
                 <form action='' method='POST' enctype='multipart/form-data' id="fileForm">
-                    <div id="fileBtn">
+                    <div id="fileBtn" style="border-radius: 10%;">
                         <input id="upfile" type="file" name="upfile" value="upfile"
                             style="-moz-opacity:0; opacity: 0; z-index: 2;" />
                         <div style="cursor: pointer; position: relative; z-index: 0;">
@@ -76,10 +76,11 @@
                 <span class="message__name">{{username}}</span>
                 <span class="message__meta">{{createdAt}}</span>
             </p>
+            <div style="height: 7px;"></div>
             <p><embed src="data:{{mimeType}};base64,{{preview}}" /></p>
             <span>
                 <a href="data:{{mimeType}};base64,{{file}}" download="{{fileName}}.{{ext}}">
-                    <img src="/img/download.png" width="75px" height="60px" style="margin-top: 0; padding: 0;"></a>
+                    <img src="/img/download.png" width="25px" height="25px" style="margin-top: 0; padding: 0;"></a>
             </span>
         </div>
     </script>
