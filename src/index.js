@@ -76,7 +76,7 @@ app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    socket.on('join', ({ username, room }, cb) => join(username, room, cb, socket, io));
+    socket.on('join', ({ username, room, password }, cb) => join(username, room, cb, socket, io, password));
 
     socket.on('sendMessage', (message, cb) => sendMessage(message, cb, socket));
 

@@ -16,7 +16,7 @@ const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 const $fileTemplate = document.querySelector('#file-template').innerHTML;
 
 //Options
-const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+const { username, room, password } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
 const setButtonSize = () => {
     const sizes = getComputedStyle($sendFileContainer);
@@ -62,6 +62,7 @@ socket.on('message', ({ username, message, createdAt, color }) => {
         color,
         createdAt: moment(createdAt).format('HH:mm')
     });
+
     $messages.insertAdjacentHTML('beforeend', html);
 
     const lastChild = $messages.lastElementChild;
@@ -83,6 +84,7 @@ socket.on('locationMessage', ({ username, url, createdAt, color }) => {
         color,
         createdAt: moment(createdAt).format('HH:mm')
     });
+
     $messages.insertAdjacentHTML('beforeend', html);
 
     const lastChild = $messages.lastElementChild;
@@ -107,6 +109,7 @@ socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, cr
         color,
         createdAt: moment(createdAt).format('HH:mm')
     });
+
     $messages.insertAdjacentHTML('beforeend', html);
 
     const child = $messages.lastElementChild.lastElementChild;
@@ -192,7 +195,12 @@ $sendFileButton.addEventListener('change', () => {
     });
 });
 
-socket.emit('join', { username, room }, (error) => {
+socket.emit('join', { username, room, password }, ({ msg, error }) => {
+    if (msg) {
+        alert(msg);
+        socket.emit('join', { username, room }, () => { });
+    }
+
     if (error) {
         alert(error);
         location.href = '/';

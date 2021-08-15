@@ -1,10 +1,14 @@
 const rooms = [];
 
-const addRoom = (room) => {
-    const newRoom = rooms.find((roomName) => roomName === room);
+const addRoom = (room, password) => {
+    const roomExists = rooms.find((roomName) => roomName.room === room);
 
-    if (!newRoom) {
-        rooms.push(room);
+    if (!roomExists) {
+        const newRoom = {
+            room,
+            password
+        };
+        rooms.push(newRoom);
     }
 };
 
@@ -16,10 +20,19 @@ const removeRoom = (room) => {
     }
 };
 
+const getRoom = (room) => {
+    const roomExists = rooms.find((roomName) => roomName.room === room.toLowerCase());
+
+    if (roomExists) {
+        return roomExists;
+    }
+};
+
 const getRooms = () => rooms;
 
 module.exports = {
     addRoom,
     removeRoom,
-    getRooms
+    getRooms,
+    getRoom
 };
