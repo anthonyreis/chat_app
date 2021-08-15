@@ -29,7 +29,7 @@ const setButtonSize = () => {
     $sendFileButton.style.fontSize = sizes.fontSize;
     $sendFileButton.style.lineHeight = sizes.lineHeight;
     $sendFileButton.style.boxSizing = sizes.boxSizing;
-    $sendFileButton.style.cursor = 'pointer';
+
 };
 
 const autoscroll = () => {
@@ -63,6 +63,18 @@ socket.on('message', ({ username, message, createdAt }) => {
     });
     $messages.insertAdjacentHTML('beforeend', html);
     autoscroll();
+
+    const lastChild = $messages.lastElementChild;
+
+    const text = lastChild.querySelectorAll('p')[1].textContent;
+    let tamText = text.length * 10;
+    tamText = tamText < 120 ? 120 : tamText;
+
+    lastChild.style.height = lastChild.clientHeight + 10 + 'px';
+    lastChild.style.width = `${tamText}px`;
+    lastChild.style.border = '1px solid #EEEDFD';
+    lastChild.style.borderRadius = '2%';
+
 });
 
 socket.on('locationMessage', ({ username, url, createdAt }) => {
@@ -73,6 +85,17 @@ socket.on('locationMessage', ({ username, url, createdAt }) => {
     });
     $messages.insertAdjacentHTML('beforeend', html);
     autoscroll();
+
+    const lastChild = $messages.lastElementChild;
+    const text = lastChild.querySelectorAll('p')[1].textContent;
+    let tamText = text.length * 10;
+    tamText = tamText < 116 ? 120 : tamText;
+
+    lastChild.style.height = lastChild.clientHeight + 10 + 'px';
+    lastChild.style.width = `${tamText}px`;
+    lastChild.style.border = '1px solid #EEEDFD';
+    lastChild.style.borderRadius = '2%';
+
 });
 
 socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, createdAt }) => {
@@ -89,12 +112,24 @@ socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, cr
     autoscroll();
 
     const child = $messages.lastElementChild.lastElementChild;
+    const filePreview = $messages.lastElementChild.querySelector('embed');
+
+    filePreview.style.marginLeft = '55px';
+
+    const lastChild = $messages.lastElementChild;
 
     if (ext === 'pdf') {
-        child.style.marginLeft = '248px';
+        child.style.marginLeft = '310px';
+        lastChild.style.width = '400px';
+        lastChild.style.height = '230px';
     } else {
-        child.style.marginLeft = '170px';
+        child.style.marginLeft = '226px';
+        lastChild.style.width = '300px';
+        lastChild.style.height = '300px';
     }
+
+    lastChild.style.border = '1px solid #EEEDFD';
+    lastChild.style.borderRadius = '2%';
 });
 
 socket.on('roomData', ({ room, users }) => {
@@ -140,6 +175,14 @@ $sendLocationButton.addEventListener('click', () => {
             $sendLocationButton.removeAttribute('disabled');
         });
     });
+});
+
+$sendFileButton.addEventListener('mouseover', () => {
+    $sendFileContainer.style.backgroundColor = '#7974F4';
+});
+
+$sendFileButton.addEventListener('mouseout', () => {
+    $sendFileContainer.style.backgroundColor = '#CCCBFB';
 });
 
 $sendFileButton.addEventListener('change', () => {

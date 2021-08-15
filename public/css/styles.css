@@ -41,7 +41,7 @@ input {
 button, #fileBtn {
     cursor: pointer;
     padding: 10px;
-    background: #7C5CBF;
+    background: #CCCBFB;
     border: none;
     color: white;
     font-size: 14px;
@@ -49,7 +49,7 @@ button, #fileBtn {
 }
 
 button:hover {
-    background: #6b47b8;
+    background: #7974F4;
 }
 
 button:disabled {
@@ -175,6 +175,11 @@ button:disabled {
 .compose#fileBtn {
     position: relative;
     border-radius: 10%;
+}
+
+.compose#fileBtn:hover {
+    background: #7c5cbf94;
+    transition: background .3s ease;
 }
 
 .compose input#upfile {
