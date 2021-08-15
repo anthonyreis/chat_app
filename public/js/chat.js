@@ -199,7 +199,10 @@ $sendFileButton.addEventListener('change', () => {
 
 $chat.addEventListener('dragenter', (e) => {
     e.preventDefault();
-    e.dataTransfer.setData('image/jpeg', e.target.id);
+    e.dataTransfer.effectAllowed = 'move';
+
+    //e.dataTransfer.setData('image/jpeg', e.target.id);
+    //e.dataTransfer.setData('application/x-moz-file', e.dataTransfer.files[0], 0);
     $chat.style.border = '2px dashed #CCCBFB';
 });
 
@@ -211,9 +214,8 @@ $chat.addEventListener('dragleave', (e) => {
 
 $chat.addEventListener('dragover', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     $chat.style.border = '2px dashed #CCCBFB';
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.dropEffect = 'copy';
 });
 
 $chat.addEventListener('drop', (e) => {
