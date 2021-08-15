@@ -34,11 +34,21 @@ app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
 app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
-    const file = req.file.buffer;
-    const { 0: fileName, 1: ext } = req.file.originalname.split('.');
-    const buffer = await sharp(file).resize({ width: 200, height: 200 }).png().toBuffer();
+    try {
+        const file = req.file.buffer;
+        const { 0: fileName, 1: ext } = req.file.originalname.split('.');
+        const mimeType = req.file.mimetype;
+        const resizableExt = ['jpg', 'jpeg', 'png'];
 
-    res.send({ file: file.toString('base64'), preview: buffer.toString('base64'), fileName, ext });
+        if (!resizableExt.includes(ext)) {
+            return res.send({ file: file.toString('base64'), preview: file.toString('base64'), mimeType, fileName, ext });
+        }
+
+        const buffer = await sharp(file).resize({ width: 200, height: 200 }).png().toBuffer();
+        res.send({ file: file.toString('base64'), preview: buffer.toString('base64'), mimeType, fileName, ext });
+    } catch (e) {
+        res.status(500).send(e.message);
+    }
 }, (error, req, res, next) => {
     res.status(400).send(error.message);
 });
@@ -87,22 +97,23 @@ io.on('connection', (socket) => {
         cb();
     });
 
-    socket.on('sendFile', ({ file, preview, fileName, ext }) => {
+    socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => {
         const user = getUser(socket.id);
         const fileBuffer = Buffer.from(file);
         const userFiles = [
             ...user.files,
             {
                 file: fileBuffer,
+                mimeType,
                 fileName,
                 ext
             }
         ];
 
         updateUser(user.id, { files: userFiles });
-        addFile(user.id, fileBuffer, fileName, ext);
+        addFile(user.id, fileBuffer, mimeType, fileName, ext);
 
-        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, preview, fileName, ext));
+        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext));
     });
 
     socket.on('disconnect', () => {

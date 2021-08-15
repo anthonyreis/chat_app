@@ -75,9 +75,10 @@ socket.on('locationMessage', ({ username, url, createdAt }) => {
     autoscroll();
 });
 
-socket.on('fileMessage', ({ file, preview, username, fileName, ext, createdAt }) => {
+socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, createdAt }) => {
     const html = Mustache.render($fileTemplate, {
         file,
+        mimeType,
         preview,
         username,
         fileName,

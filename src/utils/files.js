@@ -1,7 +1,7 @@
 const files = [];
 
-const addFile = (id, file, fileName, ext) => {
-    files.push({ id, fileName, ext, file });
+const addFile = (id, file, mimeType, fileName, ext) => {
+    files.push({ id, fileName, ext, file, mimeType });
 };
 
 const getUserFiles = (id) => {
