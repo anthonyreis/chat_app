@@ -44,9 +44,15 @@ app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
             return res.send({ file: file.toString('base64'), preview: file.toString('base64'), mimeType, fileName, ext });
         }
 
-        const buffer = await sharp(file).resize({ width: 200, height: 200 }).png().toBuffer();
+        const buffer = await sharp(file)
+            .resize(200, 200, {
+                fit: sharp.fit.inside,
+                withoutEnlargement: true,
+            }).png().toBuffer();
+
         res.send({ file: file.toString('base64'), preview: buffer.toString('base64'), mimeType, fileName, ext });
     } catch (e) {
+        console.log(e);
         res.status(500).send(e.message);
     }
 }, (error, req, res, next) => {
@@ -84,7 +90,8 @@ io.on('connection', (socket) => {
             return cb('Profanity is not allowed');
         }
 
-        io.to(user.room).emit('message', generateMessage(user.username, message));
+        socket.broadcast.to(user.room).emit('message', generateMessage(user.username, message));
+        socket.emit('message', generateMessage(user.username, message, 1));
 
         cb();
     });
@@ -92,7 +99,8 @@ io.on('connection', (socket) => {
     socket.on('sendLocation', ({ lat, lon }, cb) => {
         const user = getUser(socket.id);
 
-        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`));
+        socket.broadcast.to(user.room).emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`));
+        socket.emit('locationMessage', generateLocationMessage(user.username, `https://google.com/maps?q=${lat},${lon}`, 1));
 
         cb();
     });
@@ -113,7 +121,8 @@ io.on('connection', (socket) => {
         updateUser(user.id, { files: userFiles });
         addFile(user.id, fileBuffer, mimeType, fileName, ext);
 
-        io.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext));
+        socket.broadcast.to(user.room).emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext));
+        socket.emit('fileMessage', generateFileMessage(user.username, file, mimeType, preview, fileName, ext, 1));
     });
 
     socket.on('disconnect', () => {

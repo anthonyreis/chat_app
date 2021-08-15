@@ -55,14 +55,14 @@ const autoscroll = () => {
     }
 };
 
-socket.on('message', ({ username, message, createdAt }) => {
+socket.on('message', ({ username, message, createdAt, color }) => {
     const html = Mustache.render($messageTemplate, {
         username,
         message,
+        color,
         createdAt: moment(createdAt).format('HH:mm')
     });
     $messages.insertAdjacentHTML('beforeend', html);
-    autoscroll();
 
     const lastChild = $messages.lastElementChild;
 
@@ -72,33 +72,31 @@ socket.on('message', ({ username, message, createdAt }) => {
 
     lastChild.style.height = lastChild.clientHeight + 10 + 'px';
     lastChild.style.width = `${tamText}px`;
-    lastChild.style.border = '1px solid #EEEDFD';
-    lastChild.style.borderRadius = '2%';
 
+    autoscroll();
 });
 
-socket.on('locationMessage', ({ username, url, createdAt }) => {
+socket.on('locationMessage', ({ username, url, createdAt, color }) => {
     const html = Mustache.render($locationTemplate, {
         username,
         url,
+        color,
         createdAt: moment(createdAt).format('HH:mm')
     });
     $messages.insertAdjacentHTML('beforeend', html);
-    autoscroll();
 
     const lastChild = $messages.lastElementChild;
     const text = lastChild.querySelectorAll('p')[1].textContent;
     let tamText = text.length * 10;
-    tamText = tamText < 116 ? 120 : tamText;
+    tamText = tamText < 120 ? 120 : tamText;
 
     lastChild.style.height = lastChild.clientHeight + 10 + 'px';
     lastChild.style.width = `${tamText}px`;
-    lastChild.style.border = '1px solid #EEEDFD';
-    lastChild.style.borderRadius = '2%';
 
+    autoscroll();
 });
 
-socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, createdAt }) => {
+socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, createdAt, color }) => {
     const html = Mustache.render($fileTemplate, {
         file,
         mimeType,
@@ -106,15 +104,12 @@ socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, cr
         username,
         fileName,
         ext,
+        color,
         createdAt: moment(createdAt).format('HH:mm')
     });
     $messages.insertAdjacentHTML('beforeend', html);
-    autoscroll();
 
     const child = $messages.lastElementChild.lastElementChild;
-    const filePreview = $messages.lastElementChild.querySelector('embed');
-
-    filePreview.style.marginLeft = '55px';
 
     const lastChild = $messages.lastElementChild;
 
@@ -122,14 +117,9 @@ socket.on('fileMessage', ({ file, mimeType, preview, username, fileName, ext, cr
         child.style.marginLeft = '310px';
         lastChild.style.width = '400px';
         lastChild.style.height = '230px';
-    } else {
-        child.style.marginLeft = '226px';
-        lastChild.style.width = '300px';
-        lastChild.style.height = '300px';
     }
 
-    lastChild.style.border = '1px solid #EEEDFD';
-    lastChild.style.borderRadius = '2%';
+    autoscroll();
 });
 
 socket.on('roomData', ({ room, users }) => {

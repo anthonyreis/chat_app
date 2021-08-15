@@ -40,10 +40,10 @@
     </div>
 
     <script id="message-template" type="text/html">
-        <div class="message" style="background-color: #EEEDFD;">
+        <div class="message" style="background: {{color}}; border: 1px solid {{color}};">
             <p>
-                <span class="message__name" style="margin-left: 5px; margin-right: 0;">{{username}}</span>
-                <span class="message__meta" style="float: right; margin-right: 5px;">{{createdAt}}</span>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
             </p>
             <div style="height: 7px;"></div>
             <p style="margin-left: 5px;">{{message}}</p>
@@ -51,10 +51,10 @@
     </script>
 
     <script id="location-template" type="text/html">
-        <div class="message" style="background-color: #EEEDFD;">
+        <div class="message" style="background: {{color}}; border: 1px solid {{color}};">
             <p>
-                <span class="message__name" style="margin-left: 5px;">{{username}}</span>
-                <span class="message__meta" style="float: right; margin-right: 5px;">{{createdAt}}</span>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
             </p>
             <div style="height: 7px;"></div>
             <p style="margin-left: 5px;"><a href="{{url}}" target="_blank">My current Location</a></p>
@@ -73,14 +73,14 @@
     </script>
 
     <script id="file-template" type="text/html">
-        <div class="message" style="background-color: #EEEDFD;">
+        <div class="message file-template" style="background: {{color}}; border: 1px solid {{color}};">
             <p>
-                <span class="message__name" style="margin-left: 5px;">{{username}}</span>
-                <span class="message__meta" style="float: right; margin-right: 5px;">{{createdAt}}</span>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
             </p>
             <div style="height: 7px;"></div>
             <p><embed src="data:{{mimeType}};base64,{{preview}}" /></p>
-            <span>
+            <span id="file__download">
                 <a href="data:{{mimeType}};base64,{{file}}" download="{{fileName}}.{{ext}}">
                     <img src="/img/download.png" width="25px" height="25px" style="margin-top: 0; padding: 0;"></a>
             </span>

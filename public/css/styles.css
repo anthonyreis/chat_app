@@ -122,22 +122,35 @@ button:disabled {
 /* Message Styles */
 
 .message {
-    margin-bottom: 16px;   
+    margin-bottom: 16px;
+    border-radius: 2%;
 }
 
 .message__name {
     font-weight: 600;
     font-size: 14px;
     margin-right: 8px;
+    margin-left: 5px;
 }
 
 .message__meta {
     color: #777;
     font-size: 14px;
+    float: right;
+    margin-right: 5px;
 }
 
 .message a {
     color: #0070CC;
+}
+
+embed {
+    margin-left: 55px;
+}
+
+.file-template {
+    width: 300px;
+    height: 200px;
 }
 
 /* Message Composition Styles */
@@ -188,6 +201,17 @@ button:disabled {
 
 #file-upload-button {
     cursor: pointer;
+}
+
+#file__download {
+    position: relative;
+    bottom: 30px;
+    margin: 0 0 0 226px;
+    opacity: 0.5;
+}
+
+#file__download:hover {
+    opacity: 1;
 }
 
 /*input[type="file"] {
