@@ -8,6 +8,8 @@ const $sendFileContainer = document.querySelector('#fileBtn');
 const $sendFileButton = document.querySelector('#upfile');
 const $fileForm = document.querySelector('#fileForm');
 const $messages = document.querySelector('#messages');
+const $chat = document.querySelector('.chat__main');
+
 
 // Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
@@ -193,6 +195,47 @@ $sendFileButton.addEventListener('change', () => {
             socket.emit('sendFile', data);
         }
     });
+});
+
+$chat.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    e.dataTransfer.setData('image/jpeg', e.target.id);
+    $chat.style.border = '2px dashed #CCCBFB';
+});
+
+$chat.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    $chat.style.border = 'initial';
+});
+
+
+$chat.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    $chat.style.border = '2px dashed #CCCBFB';
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.dropEffect = 'copy';
+});
+
+$chat.addEventListener('drop', (e) => {
+    e.preventDefault();
+    $chat.style.border = 'initial';
+    const { 0: file } = e.dataTransfer.files;
+    const url = 'chat.html';
+
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    xhr.open('POST', url, true);
+
+    xhr.addEventListener('readystatechange', function (e) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            socket.emit('sendFile', JSON.parse(xhr.response));
+        } else if (xhr.readyState == 4 && xhr.status != 200) {
+            alert(xhr.response);
+        }
+    });
+
+    formData.append('upfile', file);
+    xhr.send(formData);
 });
 
 socket.emit('join', { username, room, password }, ({ msg, error }) => {
