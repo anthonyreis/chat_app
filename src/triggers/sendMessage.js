@@ -11,8 +11,8 @@ const sendMessage = (message, cb, socket) => {
         return cb('Profanity is not allowed');
     }
 
-    socket.broadcast.to(user.room).emit('message', generateMessage(user.username, message));
-    socket.emit('message', generateMessage(user.username, message, 1));
+    socket.broadcast.to(user.room).emit('message', generateMessage(user.username, user.room, message));
+    socket.emit('message', generateMessage(user.username, user.room, message, 1));
 
     cb();
 };

@@ -228,7 +228,7 @@ $chat.addEventListener('drop', (e) => {
     const formData = new FormData();
     xhr.open('POST', url, true);
 
-    xhr.addEventListener('readystatechange', function (e) {
+    xhr.addEventListener('readystatechange', function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             socket.emit('sendFile', JSON.parse(xhr.response));
         } else if (xhr.readyState == 4 && xhr.status != 200) {

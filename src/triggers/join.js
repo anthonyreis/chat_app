@@ -1,6 +1,7 @@
 const { addUser, getUsersInRoom } = require('../utils/users');
 const { addRoom, getRoom } = require('../utils/rooms');
 const { generateMessage } = require('../utils/messages');
+const rebuildHistory = require('../utils/rebuildHistory');
 
 const join = (username, room, cb, socket, io, password) => {
     const roomToEnter = getRoom(room);
@@ -21,8 +22,12 @@ const join = (username, room, cb, socket, io, password) => {
     socket.join(user.room);
     addRoom(user.room, password);
 
-    socket.emit('message', generateMessage('Admin', 'Welcome!'));
-    socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`));
+    if (roomToEnter) {
+        rebuildHistory(username, room, socket);
+    }
+
+    socket.emit('message', generateMessage('Admin', user.room, 'Welcome!'));
+    socket.broadcast.to(user.room).emit('message', generateMessage('Admin', user.room, `${user.username} has joined!`));
 
     io.to(user.room).emit('roomData', {
         room: user.room,

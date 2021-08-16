@@ -15,7 +15,7 @@ const upload = multer({
         fileSize: 1000000
     },
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|pdf)$/)) {
+        if (!file.originalname.toLowerCase().match(/\.(jpg|jpeg|png|pdf)$/)) {
             cb(new Error('Please upload an image (jpg, jpeg, png or pdf)'));
         }
 
@@ -42,7 +42,7 @@ app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
 
         const resizableExt = ['jpg', 'jpeg', 'png'];
 
-        if (!resizableExt.includes(ext)) {
+        if (!resizableExt.includes(ext.toLowerCase())) {
             return res.send({
                 file: file.toString('base64'),
                 preview: file.toString('base64'),
@@ -68,7 +68,6 @@ app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
             ext
         });
     } catch (e) {
-        console.log(e);
         res.status(500).send(e.message);
     }
 }, (error, req, res, next) => {
