@@ -7,7 +7,7 @@ const join = (username, room, cb, socket, io, password) => {
     const roomToEnter = getRoom(room);
 
     if (roomToEnter && !roomToEnter.password && password) {
-        password = undefined;
+        password = null;
         cb({ msg: 'This room doesnt require a password' });
     } else if (roomToEnter && roomToEnter.password !== password) {
         return cb({ error: 'Password incorrect' });

@@ -4,9 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const multer = require('multer');
 const sharp = require('sharp');
-const play = require('audio-play');
 const {sendMessage, sendLocationMessage, sendFile, sendAudioMessage, join, disconnect} = require('./triggers');
-const fs = require('fs');
 
 const upload = multer({
     limits: {

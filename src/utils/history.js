@@ -1,6 +1,12 @@
 let history = [];
 
 const addHistory = (info, type, room) => {
+    const {username, message} = info;
+    
+    if (username === 'Admin' && message === 'Welcome!') {
+        return null;
+    }
+
     history.push({ ...info, type, room });
 };
 
