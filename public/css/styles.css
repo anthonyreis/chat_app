@@ -233,6 +233,15 @@ embed {
     opacity: 1;
 }
 
+#tts {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+#tts:hover {
+    opacity: 1;
+}
+
 /*input[type="file"] {
     visibility:hidden;
 }*/

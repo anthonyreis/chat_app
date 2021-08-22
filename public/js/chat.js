@@ -1,4 +1,5 @@
 const socket = io();
+const synth = window.speechSynthesis;
 
 const $messageForm = document.querySelector('#formMessage');
 const $messageFormInput = $messageForm.querySelector('input');
@@ -14,6 +15,21 @@ const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 //Options
 const { username, room, password } = Qs.parse(location.search, { ignoreQueryPrefix: true });
+
+const setSpeech = (message) => {
+    const voices = synth.getVoices();
+    const utterThis = new SpeechSynthesisUtterance(message);
+    // eslint-disable-next-line prefer-destructuring
+    utterThis.voice = voices[0];
+
+    if (synth.paused) {
+        synth.resume();
+    } else if (synth.speaking) {
+        synth.pause();
+    } else {
+        synth.speak(utterThis);
+    }
+};
 
 const setButtonSize = () => {
     const sizes = getComputedStyle($sendFileContainer);
@@ -40,7 +56,7 @@ const setButtonSize = () => {
 
 };
 
-socket.on('message', ({ username, message, createdAt, color }) => {
+socket.on('message', ({ username, message, createdAt, color}) => {
     const html = Mustache.render($messageTemplate, {
         username,
         message,
@@ -49,6 +65,12 @@ socket.on('message', ({ username, message, createdAt, color }) => {
     });
 
     $messages.insertAdjacentHTML('beforeend', html);
+
+    const $playTTS = document.getElementsByClassName('tts');
+   
+    $playTTS[$playTTS.length - 1].addEventListener('click', () => {
+        setSpeech(message);
+    });
 
     const lastChild = $messages.lastElementChild;
 
