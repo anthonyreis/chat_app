@@ -38,7 +38,7 @@ input {
     outline: none;
 }
 
-button, #fileBtn {
+button, #fileBtn, #audioBtn {
     cursor: pointer;
     padding: 10px;
     background: #CCCBFB;
@@ -46,6 +46,7 @@ button, #fileBtn {
     color: white;
     font-size: 14px;
     transition: background .3s ease;
+    margin-right: 12px;
 }
 
 button:hover {
@@ -153,6 +154,10 @@ embed {
     height: 250px;
 }
 
+.audio-template {
+    width: 350px;
+}
+
 /* Message Composition Styles */
 
 .compose {
@@ -201,6 +206,20 @@ embed {
 
 #file-upload-button {
     cursor: pointer;
+}
+
+.compose #audioFile {
+    position: absolute;
+}
+
+.compose #audioBtn {
+    position: relative;
+    border-radius: 10%;
+}
+
+.compose #audioBtn:hover {
+    background: #7c5cbf94;
+    transition: background .3s ease;
 }
 
 #file__download {

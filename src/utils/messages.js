@@ -61,8 +61,23 @@ const generateFileMessage = (username, room, file, mimeType, preview, fileName, 
     return msg;
 };
 
+const generateAudioMessage = (username, file, fileName, mimeType, ext, flag) => {
+    const msg = {
+        username,
+        file,
+        mimeType,
+        fileName,
+        ext,
+        color: flag ? '#CCCBFB' : '#EEEDFD',
+        createdAt: new Date().getTime()
+    };
+
+    return msg;
+};
+
 module.exports = {
     generateMessage,
     generateLocationMessage,
-    generateFileMessage
+    generateFileMessage,
+    generateAudioMessage
 };

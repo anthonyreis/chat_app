@@ -35,6 +35,17 @@
                         </div>
                     </div>
                 </form>
+
+                <form action='' method='POST' enctype='multipart/form-data' id="fileForm">
+                    <div id="audioBtn" style="border-radius: 10%;">
+                        <audio controls autoplay playsinline id="audioFile" class="audioFile" type="range" name="upfile" value="upfile"
+                            style="-moz-opacity:0; opacity: 0; z-index: 2;" onclick="this.value=null;" /></audio>
+                        <div style="position: relative; z-index: 0;">
+                            <img src="/img/file.png" width="25em" height="20em" aria-label="Send File" title="Send File"
+                                id="fileImage">
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -87,6 +98,17 @@
         </div>
     </script>
 
+    <script id="audio-template" type="text/html">
+        <div class="message audio audio-template" style="background: {{color}}; border: 1px solid {{color}};">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <div style="height: 7px;"></div>
+                <audio controls src="data:{{mimeType}};base64,{{file}}" style="margin-left: 5px;"></audio>
+        </div>
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
@@ -98,6 +120,8 @@
     <script src="/js/dragAndDrop.js"></script>
     <script src="/js/file.js"></script>
     <script src="/js/location.js"></script>
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <script src="/js/audio.js"></script>
 </body>
 
 </html>

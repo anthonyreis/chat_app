@@ -4,11 +4,9 @@ const express = require('express');
 const socketio = require('socket.io');
 const multer = require('multer');
 const sharp = require('sharp');
-const sendMessage = require('./triggers/sendMessage');
-const sendLocationMessage = require('./triggers/sendLocationMessage');
-const sendFile = require('./triggers/sendFile');
-const join = require('./triggers/join');
-const disconnect = require('./triggers/disconnect');
+const play = require('audio-play');
+const {sendMessage, sendLocationMessage, sendFile, sendAudioMessage, join, disconnect} = require('./triggers');
+const fs = require('fs');
 
 const upload = multer({
     limits: {
@@ -35,6 +33,7 @@ app.use(express.json());
 
 app.post('/chat.html?', upload.single('upfile'), async (req, res) => {
     try {
+        console.log(req);
         const file = req.file.buffer;
         const mimeType = req.file.mimetype;
 
@@ -82,6 +81,8 @@ io.on('connection', (socket) => {
     socket.on('sendLocation', ({ lat, lon }, cb) => sendLocationMessage(lat, lon, cb, socket));
 
     socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => sendFile(file, mimeType, preview, fileName, ext, socket));
+
+    socket.on('audioFile', (audioBuffer) => sendAudioMessage(audioBuffer.toString('base64'), 'audio/ogg', 'audio.mp3', '.mp3', socket));
 
     socket.on('disconnect', () => disconnect(io, socket));
 });
