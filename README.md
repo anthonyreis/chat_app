@@ -10,3 +10,4 @@
 * Envio de arquivos, tanto pelo botão que abre o explorador do sistema quanto por drag and drop;
 * Envio de audio em tempo real, utilizando seu dispositivo de entrada;
 * Text To Speech das mensagens de texto, utilizando a API SpeechSynthesis; 
+* Speech To Text dos audios enviados em tempo real.
