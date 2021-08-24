@@ -76,6 +76,15 @@ button:disabled {
     width: 350px;
 }
 
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+  }
+
 .centered-form button {
     width: 100%;
     border-radius: 2%;

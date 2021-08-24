@@ -5,7 +5,6 @@ const router = new express.Router();
 
 router.post('/chat.html?', upload.single('upfile'), async (req, res) => {
     try {
-        console.log(req);
         const file = req.file.buffer;
         const mimeType = req.file.mimetype;
 
