@@ -29,7 +29,7 @@ def RecognizeSpeech():
     audio_file = sr.AudioFile("newFile.wav")
 
     with audio_file as source:
-        recognizer.adjust_for_ambient_noise(source, duration=0.7)
+        recognizer.adjust_for_ambient_noise(source)
         audio_file = recognizer.record(source)
         result = recognizer.recognize_google(audio_data=audio_file, language='pt-BR')
         print(result)
