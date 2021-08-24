@@ -13,7 +13,7 @@ $sendAudioContainer.addEventListener('mouseout', () => {
     $sendAudioContainer.style.backgroundColor = '#CCCBFB';
 });
 
-socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, createdAt, color}) => {
+socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, audioText, createdAt, textId, color}) => {
     const html = Mustache.render($audioTemplate, {
         file,
         mimeType,
@@ -21,10 +21,26 @@ socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, createdAt,
         fileName,
         ext,
         color,
+        audioText,
+        textId,
         createdAt: moment(createdAt).format('HH:mm')
     });
 
     $messages.insertAdjacentHTML('beforeend', html);
+
+    const $audioTextButton = document.querySelector(`[id='c-${textId}']`);
+
+    const $audioText = document.querySelector(`[id='${textId}']`);
+
+    $audioTextButton.addEventListener('click', () => {
+        if ($audioText.style.display === 'none') {
+            $audioText.style.display = 'initial';
+        } else {
+            $audioText.style.display = 'none';
+        }
+        
+    });
+
 
     autoscroll();
 });
@@ -58,11 +74,12 @@ const captureMicrophone = function(callback) {
 $sendAudioContainer.addEventListener('click', () => {
     if (clicked) {
         clicked = false;
+    
         recorder.stopRecording(stopRecordingCallback);
-        
-        return; 
-    }
 
+        return; 
+    } 
+    
     if (!microphone) {
         captureMicrophone(function(mic) {
             microphone = mic;

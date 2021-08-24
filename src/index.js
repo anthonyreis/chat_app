@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const multer = require('multer');
 const sharp = require('sharp');
 const {sendMessage, sendLocationMessage, sendFile, sendAudioMessage, join, disconnect} = require('./triggers');
+const speechRecognition = require('./utils/speechRecognition');
 
 const upload = multer({
     limits: {
@@ -80,7 +81,17 @@ io.on('connection', (socket) => {
 
     socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => sendFile(file, mimeType, preview, fileName, ext, socket));
 
-    socket.on('audioFile', (audioBuffer) => sendAudioMessage(audioBuffer.toString('base64'), 'audio/ogg', 'audio.mp3', '.mp3', socket));
+    socket.on('audioFile', async (audioBuffer) => {
+        let audioText = '';
+
+        audioText = await speechRecognition(audioBuffer);
+
+        if (audioText.includes('subprocess error exit')) {
+            audioText = 'Não foi possivel transcrever o audio';
+        }
+
+        sendAudioMessage(audioBuffer.toString('base64'), 'audio/ogg', 'audio.mp3', '.mp3', audioText, socket);
+    });
 
     socket.on('disconnect', () => disconnect(io, socket));
 });

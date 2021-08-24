@@ -233,12 +233,12 @@ embed {
     opacity: 1;
 }
 
-#tts {
+#tts, .stt {
     opacity: 0.3;
     cursor: pointer;
 }
 
-#tts:hover {
+#tts:hover, .stt:hover {
     opacity: 1;
 }
 

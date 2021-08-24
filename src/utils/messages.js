@@ -61,13 +61,15 @@ const generateFileMessage = (username, room, file, mimeType, preview, fileName, 
     return msg;
 };
 
-const generateAudioMessage = (username, file, fileName, mimeType, ext, flag) => {
+const generateAudioMessage = (username, file, fileName, mimeType, ext, audioText, textId, flag) => {
     const msg = {
         username,
         file,
         mimeType,
         fileName,
         ext,
+        audioText,
+        textId,
         color: flag ? '#CCCBFB' : '#EEEDFD',
         createdAt: new Date().getTime()
     };
