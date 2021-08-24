@@ -11,7 +11,6 @@ const speechRecognition = async (buffer) => {
                 return err.message;
             }
         });
-
  
         const child = spawn('python', ['src/utils/audioToText.py']);
 
