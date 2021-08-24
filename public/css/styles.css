@@ -85,6 +85,32 @@ button:disabled {
     text-align: center;
   }
 
+  .name {
+    position: fixed;
+    left: 0;
+    top: 15%;
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-size: 35px;
+    color: #7c5cbf94;
+    font-family: 'Orbitron', sans-serif;
+  }
+
+  .animate__animated.animate__pulse {
+    --animate-duration: 2s;
+  }
+
+  #nameLine {
+    position: fixed;
+    top: 21%;
+    width: 17%;
+    color: white;
+    font-size: 30px;
+    margin: auto 41.5%;
+    color: #7c5cbf94;
+  }
+
 .centered-form button {
     width: 100%;
     border-radius: 2%;
