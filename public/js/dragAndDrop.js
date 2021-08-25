@@ -40,5 +40,6 @@ $chat.addEventListener('drop', (e) => {
     });
 
     formData.append('upfile', file);
+    formData.append('userId', socket.id);
     xhr.send(formData);
 });

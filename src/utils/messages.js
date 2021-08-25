@@ -1,4 +1,5 @@
 const { addHistory, getHistory } = require('./history');
+const {getUserByName} = require('./users');
 
 const generateMessage = (username, room, message, flag) => {
     const msg = {
@@ -39,11 +40,15 @@ const generateLocationMessage = (username, room, url, flag) => {
 };
 
 const generateFileMessage = (username, room, mimeType, fileName, ext, flag) => {
-    const msg = {
+    let msg = {};
+    const {id} = getUserByName(username, room);
+
+    msg = {
         username,
         mimeType,
         fileName,
         ext,
+        id,
         color: flag ? '#CCCBFB' : '#EEEDFD',
         createdAt: new Date().getTime()
     };

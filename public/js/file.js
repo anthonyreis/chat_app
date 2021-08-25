@@ -1,32 +1,34 @@
 const $fileTemplate = document.querySelector('#file-template').innerHTML;
 const $fileForm = document.querySelector('#fileForm');
-let fileData;
 
-socket.on('fileMessage', ({ mimeType, username, fileName, ext, createdAt, color }) => {
-    const html = Mustache.render($fileTemplate, {
-        file: fileData.file,
-        mimeType,
-        preview: fileData.preview,
-        username,
-        fileName,
-        ext,
-        color,
-        createdAt: moment(createdAt).format('HH:mm')
+socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, createdAt, color }) => {
+
+    fetchData(fileName, id, ext, (file, preview) => {
+        const html = Mustache.render($fileTemplate, {
+            file,
+            mimeType,
+            preview,
+            username,
+            fileName,
+            ext,
+            color,
+            createdAt: moment(createdAt).format('HH:mm')
+        });
+            
+        $messages.insertAdjacentHTML('beforeend', html);
+            
+        const child = $messages.lastElementChild.lastElementChild;
+            
+        const lastChild = $messages.lastElementChild;
+            
+        if (ext === 'pdf') {
+            child.style.marginLeft = '310px';
+            lastChild.style.width = '400px';
+            lastChild.style.height = '230px';
+        }
+            
+        autoscroll();
     });
-        
-    $messages.insertAdjacentHTML('beforeend', html);
-        
-    const child = $messages.lastElementChild.lastElementChild;
-        
-    const lastChild = $messages.lastElementChild;
-        
-    if (ext === 'pdf') {
-        child.style.marginLeft = '310px';
-        lastChild.style.width = '400px';
-        lastChild.style.height = '230px';
-    }
-        
-    autoscroll();
 
 });
 
@@ -41,6 +43,7 @@ $sendFileButton.addEventListener('mouseout', () => {
 $sendFileButton.addEventListener('change', () => {
     const url = 'chat.html';
     const formData = new FormData($fileForm);
+    formData.append('userId', socket.id);
 
     $.ajax({
         type: 'POST',
@@ -50,7 +53,6 @@ $sendFileButton.addEventListener('change', () => {
         cache: false,
         processData: false,
         success(data) {
-            fileData = data;
             const newData = {
                 mimeType: data.mimeType,
                 fileName: data.fileName,
@@ -60,3 +62,34 @@ $sendFileButton.addEventListener('change', () => {
         }
     });
 });
+
+const blobToBase64 = function(blob) {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(blob);
+
+    return new Promise((resolve) => {
+        reader.onloadend = () => {
+            const dataUrl = reader.result;
+            const {1:base64} = dataUrl.split(',');
+
+            resolve(base64);
+        };
+    });
+};
+
+const fetchData = async (fileName, id, ext, callback) => {
+    fetch(`uploadedFiles/${fileName}${id}.${ext}`).then(function(response) {
+        return response.blob();
+    }).then((blob) => {
+        blobToBase64(blob).then((b64File) => {
+            fetch(`uploadedFiles/${fileName}${id}-preview.${ext}`).then(function(response) {
+                response.blob().then((blobPreview) => {
+                    blobToBase64(blobPreview).then((b64Preview) => {
+                        callback(b64File, b64Preview);
+                    });
+                });
+            });
+        });
+    });
+};

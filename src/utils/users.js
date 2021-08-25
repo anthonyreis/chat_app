@@ -62,6 +62,12 @@ const getUser = (id) => {
     return user;
 };
 
+const getUserByName = (username, room) => {
+    const user = users.find((user) => user.username === username.toLowerCase() && user.room === room.toLowerCase());
+
+    return user;
+};
+
 const getUsersInRoom = (room) => {
     const roomUsers = users.filter((user) => user.room === room.toLowerCase());
 
@@ -73,5 +79,6 @@ module.exports = {
     removeUser,
     getUser,
     getUsersInRoom,
-    updateUser
+    updateUser,
+    getUserByName
 };
