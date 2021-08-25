@@ -25,27 +25,31 @@ app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
 io.on('connection', (socket) => {
-    socket.on('join', ({ username, room, password }, cb) => join(username, room, cb, socket, io, password));
+    try {
+        socket.on('join', ({ username, room, password }, cb) => join(username, room, cb, socket, io, password));
 
-    socket.on('sendMessage', (message, cb) => sendMessage(message, cb, socket));
+        socket.on('sendMessage', (message, cb) => sendMessage(message, cb, socket));
 
-    socket.on('sendLocation', ({ lat, lon }, cb) => sendLocationMessage(lat, lon, cb, socket));
+        socket.on('sendLocation', ({ lat, lon }, cb) => sendLocationMessage(lat, lon, cb, socket));
 
-    socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => sendFile(file, mimeType, preview, fileName, ext, socket));
+        socket.on('sendFile', ({ file, mimeType, preview, fileName, ext }) => sendFile(file, mimeType, preview, fileName, ext, socket));
 
-    socket.on('audioFile', async (audioBuffer) => {
-        let audioText = '';
+        socket.on('audioFile', async (audioBuffer) => {
+            let audioText = '';
 
-        audioText = await speechRecognition(audioBuffer);
+            audioText = await speechRecognition(audioBuffer);
 
-        if (audioText.includes('subprocess error exit')) {
-            audioText = 'Não foi possivel transcrever o audio';
-        }
+            if (audioText.includes('subprocess error exit')) {
+                audioText = 'Não foi possivel transcrever o audio';
+            }
 
-        sendAudioMessage(audioBuffer.toString('base64'), 'audio/wav', 'audio.wav', '.wav', audioText, socket);
-    });
+            sendAudioMessage(audioBuffer.toString('base64'), 'audio/wav', 'audio.wav', '.wav', audioText, socket);
+        });
 
-    socket.on('disconnect', () => disconnect(io, socket));
+        socket.on('disconnect', () => disconnect(io, socket));
+    } catch (e) {
+        console.log('Ocorreu um erro inesperado', e.message);
+    }
 });
 
 server.listen(port, () => {

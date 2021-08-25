@@ -8,10 +8,12 @@ router.post('/chat.html?', upload.single('upfile'), async (req, res) => {
         const file = req.file.buffer;
         const mimeType = req.file.mimetype;
 
-        const { 0: fileName, 1: ext } = req.file.originalname.split('.');
-
+        const index = req.file.originalname.lastIndexOf('.');
+        const fileName = req.file.originalname.substr(0, index);
+        const ext = req.file.originalname.substr(index + 1);
+        
         const resizableExt = ['jpg', 'jpeg', 'png'];
-
+       
         if (!resizableExt.includes(ext.toLowerCase())) {
             return res.send({
                 file: file.toString('base64'),

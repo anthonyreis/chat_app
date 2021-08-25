@@ -38,12 +38,10 @@ const generateLocationMessage = (username, room, url, flag) => {
     return msg;
 };
 
-const generateFileMessage = (username, room, file, mimeType, preview, fileName, ext, flag) => {
+const generateFileMessage = (username, room, mimeType, fileName, ext, flag) => {
     const msg = {
         username,
-        file,
         mimeType,
-        preview,
         fileName,
         ext,
         color: flag ? '#CCCBFB' : '#EEEDFD',
