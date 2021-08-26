@@ -39,10 +39,11 @@ socket.on('message', ({ username, message, createdAt, color}) => {
 
     const text = lastChild.querySelectorAll('p')[1].textContent;
     let tamText = text.length * 10;
-    tamText = tamText < 120 ? 120 : tamText;
+    tamText = tamText < 120 ? 120 : tamText > 500 ? 500 : tamText;
 
-    lastChild.style.height = lastChild.clientHeight + 10 + 'px';
     lastChild.style.width = `${tamText}px`;
+    lastChild.style.wordBreak = 'break-all';
+    lastChild.style.height = lastChild.clientHeight + 10 + 'px';
 
     autoscroll();
 });
