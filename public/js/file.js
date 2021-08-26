@@ -3,7 +3,10 @@ const $fileForm = document.querySelector('#fileForm');
 
 socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, createdAt, color }) => {
 
-    fetchData(fileName, id, ext, (file, preview) => {
+    fetchData(fileName, id, ext, async (file, preview) => {
+
+        const dimensions = await getImageDimensions(`${fileName}${id}-preview.${ext}`, ext);
+
         const html = Mustache.render($fileTemplate, {
             file,
             mimeType,
@@ -20,11 +23,15 @@ socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, created
         const child = $messages.lastElementChild.lastElementChild;
             
         const lastChild = $messages.lastElementChild;
-            
+
+        const {0: img} = lastChild.getElementsByTagName('embed');
+
         if (ext === 'pdf') {
             child.style.marginLeft = '310px';
             lastChild.style.width = '400px';
             lastChild.style.height = '230px';
+        } else if (dimensions.w < 200) {
+            img.style.marginLeft = '110px';
         }
             
         autoscroll();
@@ -93,3 +100,14 @@ const fetchData = async (fileName, id, ext, callback) => {
         });
     });
 };
+
+const getImageDimensions = (fileName, ext) => new Promise(function (resolve, rejected) {
+    if (ext === 'pdf') {
+        resolve(null);
+    }
+    const i = new Image();
+    i.onload = function() {
+        resolve({w: i.width, h: i.height});
+    };
+    i.src = `uploadedFiles/${fileName}`;
+});
