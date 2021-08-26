@@ -2,7 +2,7 @@ const CloudmersiveVideoApiClient = require('cloudmersive-video-api-client');
 
 const defaultClient = CloudmersiveVideoApiClient.ApiClient.instance;
 const {Apikey} = defaultClient.authentications;
-Apikey.apiKey = '2706d454-ea47-4128-be95-7395bfd4eeb7';
+Apikey.apiKey = process.env.CLOUDMERSIVE_API_KEY;
 
 const apiInstance = new CloudmersiveVideoApiClient.AudioApi();
 
