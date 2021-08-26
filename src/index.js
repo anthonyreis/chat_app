@@ -2,19 +2,27 @@ const http = require('http');
 const path = require('path');
 const express = require('express');
 const socketio = require('socket.io');
+const corsProxy = require('cors-anywhere');
 const {
     sendMessage, 
     sendLocationMessage, 
     sendFile, 
     sendAudioMessage, 
     join, 
-    disconnect
+    disconnect,
+    processCommand,
+    playVideo
 } = require('./triggers');
 const speechRecognition = require('./utils/speechRecognition');
 const routes = require('./routes/fileUpload');
 
-const app = express();
+const app = express(corsProxy.createServer({
+    originWhitelist: [],
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2']
+}));
 app.use(routes);
+
 const server = http.createServer(app);
 const io = socketio(server);
 
@@ -50,6 +58,12 @@ io.on('connection', (socket) => {
     } catch (e) {
         console.log('Ocorreu um erro inesperado', e.message);
     }
+
+    socket.on('botCommand', async (message) => {
+        const url = await processCommand(message, socket);
+
+        playVideo(url, socket);
+    });
 });
 
 server.listen(port, () => {

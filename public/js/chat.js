@@ -5,6 +5,7 @@ const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
+const $player = document.querySelector('#youtube');
 
 // Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
@@ -69,15 +70,11 @@ $messageForm.addEventListener('submit', (e) => {
 
     const message = e.target.elements.message.value;
 
-    socket.emit('sendMessage', message, (error) => {
-        $messageFormButton.removeAttribute('disabled');
-        $messageFormInput.value = '';
-        $messageFormInput.focus();
-
-        if (error) {
-            return alert(error);
-        }
-    });
+    if (message.substr(0, 5) === './bot') {
+        socket.emit('botCommand', message);
+    } else {
+        socket.emit('sendMessage', message);
+    }
 });
 
 socket.emit('join', { username, room, password }, ({ msg, error }) => {
@@ -90,4 +87,15 @@ socket.emit('join', { username, room, password }, ({ msg, error }) => {
         alert(error);
         location.href = '/';
     }
+});
+
+socket.on('playVideo', (url) => {
+    console.log('Playando', url);
+    $messageFormButton.removeAttribute('disabled');
+    $messageFormInput.value = '';
+    $messageFormInput.focus();
+
+    const {1: videoId} = url.split(/\?v=/);
+
+    $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
 });
