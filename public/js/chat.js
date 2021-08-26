@@ -76,8 +76,11 @@ $messageForm.addEventListener('submit', (e) => {
     const message = e.target.elements.message.value;
 
     if (message.substr(0, 5) === './bot') {
+        $messageFormButton.removeAttribute('disabled');
+        $messageFormInput.value = '';
+        $messageFormInput.focus();
+
         socket.emit('botCommand', message);
-        
     } else {
         socket.emit('sendMessage', message, (error) => {
             $messageFormButton.removeAttribute('disabled');
