@@ -1,3 +1,4 @@
 node_modules
 src/config
 .vscode
+public/templates/fullTemplates.txt

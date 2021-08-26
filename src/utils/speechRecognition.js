@@ -30,6 +30,11 @@ const speechRecognition = async (buffer) => {
         });
         
         if (exitCode) {
+            fs.unlink('newFile.wav', (error) => {
+                if (error) {
+                    throw new Error(`Houve um erro na remoção do arquivo, ${error}`);
+                }
+            });
             throw new Error(`subprocess error exit ${exitCode}, ${error}`);
         }
 
