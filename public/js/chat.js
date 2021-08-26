@@ -79,7 +79,15 @@ $messageForm.addEventListener('submit', (e) => {
         socket.emit('botCommand', message);
         
     } else {
-        socket.emit('sendMessage', message);
+        socket.emit('sendMessage', message, (error) => {
+            $messageFormButton.removeAttribute('disabled');
+            $messageFormInput.value = '';
+            $messageFormInput.focus();
+
+            if (error) {
+                console.log('Algo deu errado');
+            }
+        });
     }
 });
 
