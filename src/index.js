@@ -12,7 +12,7 @@ const {
     disconnect,
     playVideo
 } = require('./triggers');
-const getYoutubeUrl = require('./utils/getYoutubeUrl');
+const youtubeSeach = require('./utils/getYoutubeUrl');
 const speechRecognition = require('./utils/speechRecognition');
 const routes = require('./routes/fileUpload');
 
@@ -60,9 +60,9 @@ io.on('connection', (socket) => {
     }
 
     socket.on('botCommand', async (message) => {
-        const url = await getYoutubeUrl(message, socket);
-        
-        playVideo(url[0].link, socket);
+        const url = await youtubeSeach(message);
+       
+        playVideo(url, socket);
     });
 });
 

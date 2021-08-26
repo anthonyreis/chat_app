@@ -89,13 +89,10 @@ socket.emit('join', { username, room, password }, ({ msg, error }) => {
     }
 });
 
-socket.on('playVideo', (url) => {
-    console.log('Playando', url);
+socket.on('playVideo', (videoId) => {
     $messageFormButton.removeAttribute('disabled');
     $messageFormInput.value = '';
     $messageFormInput.focus();
-
-    const {1: videoId} = url.split(/\?v=/);
 
     $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
 });
