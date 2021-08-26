@@ -33,9 +33,16 @@ socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, created
         } else if (dimensions.w < 200) {
             img.style.marginLeft = '110px';
         }
-            
-        autoscroll();
     });
+
+    const observer = new MutationObserver(function() {
+        setTimeout(function() {
+            autoscroll();
+            observer.disconnect();
+        }, 1000);
+    });
+
+    observer.observe($messages, {attributes: false, childList: true, characterData: false, subtree:true});
 
 });
 

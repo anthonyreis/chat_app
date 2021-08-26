@@ -1,14 +1,10 @@
 const socket = io();
-const synth = window.speechSynthesis;
 
 const $messageForm = document.querySelector('#formMessage');
 const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
-const $sendFileContainer = document.querySelector('#fileBtn');
-const $sendFileButton = document.querySelector('#upfile');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
-let previousUtter = '';
 
 // Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
@@ -16,66 +12,6 @@ const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
 //Options
 const { username, room, password } = Qs.parse(location.search, { ignoreQueryPrefix: true });
-
-const setSpeech = (message, $playTTS) => {
-    const voices = synth.getVoices();
-    
-    const utterThis = new SpeechSynthesisUtterance(message);
-    // eslint-disable-next-line prefer-destructuring
-    utterThis.voice = voices[0];
-
-    if (previousUtter != '' && utterThis.text !== previousUtter.text) {
-        synth.cancel();
-        synth.speak(utterThis);
-    } else if (synth.paused) {
-        synth.resume();
-    } else if (synth.speaking) {
-        synth.pause();
-    } else {
-        synth.speak(utterThis);
-    }
-   
-    previousUtter = utterThis;
-
-    utterThis.addEventListener('end', () => {
-        for (const item of $playTTS) {
-            item.style.display = 'initial'; 
-        }
-    });
-
-    utterThis.addEventListener('pause', () => {
-        setTimeout(function() {
-            for (const item of $playTTS) {
-                item.style.display = 'initial'; 
-            }
-        }, 2000);
-    });
-};
-
-const setButtonSize = () => {
-    const sizes = getComputedStyle($sendFileContainer);
-
-    $sendFileButton.style.width = sizes.width;
-    $sendFileButton.style.height = sizes.height;
-    $sendFileButton.style.right = '93px';
-    $sendFileButton.style.bottom = '25px';
-    $sendFileButton.style.padding = sizes.padding;
-    $sendFileButton.style.fontSize = sizes.fontSize;
-    $sendFileButton.style.lineHeight = sizes.lineHeight;
-    $sendFileButton.style.boxSizing = sizes.boxSizing;
-
-
-    $sendAudioButton.style.width = sizes.width;
-    $sendAudioButton.style.height = sizes.height;
-    $sendAudioButton.style.right = '35px';
-    $sendAudioButton.style.bottom = '24px';
-    $sendAudioButton.style.padding = sizes.padding;
-    $sendAudioButton.style.fontSize = sizes.fontSize;
-    $sendAudioButton.style.lineHeight = sizes.lineHeight;
-    $sendAudioButton.style.boxSizing = sizes.boxSizing;
-    $sendAudioButton.style.marginLeft = 0;
-
-};
 
 socket.on('message', ({ username, message, createdAt, color}) => {
     const html = Mustache.render($messageTemplate, {
