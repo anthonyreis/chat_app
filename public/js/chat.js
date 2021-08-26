@@ -6,6 +6,10 @@ const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
 const $player = document.querySelector('#youtube');
+const $audioPermission = new Audio();
+navigator.getUserMedia = navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia;
 
 // Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
@@ -51,6 +55,7 @@ socket.on('message', ({ username, message, createdAt, color}) => {
 
 socket.on('roomData', ({ room, users }) => {
     setButtonSize();
+
     const html = Mustache.render($sidebarTemplate, {
         room: room.charAt(0).toUpperCase() + room.substr(1),
         users
@@ -72,6 +77,7 @@ $messageForm.addEventListener('submit', (e) => {
 
     if (message.substr(0, 5) === './bot') {
         socket.emit('botCommand', message);
+        
     } else {
         socket.emit('sendMessage', message);
     }
@@ -90,9 +96,21 @@ socket.emit('join', { username, room, password }, ({ msg, error }) => {
 });
 
 socket.on('playVideo', (videoId) => {
-    $messageFormButton.removeAttribute('disabled');
-    $messageFormInput.value = '';
-    $messageFormInput.focus();
+    if (typeof navigator.mediaDevices === 'undefined' || !navigator.mediaDevices.getUserMedia) {
+        alert('This browser does not supports WebRTC getUserMedia API.');
 
-    $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
+        if (navigator.getUserMedia) {
+            alert('This browser seems supporting deprecated getUserMedia API.');
+        }
+    }
+
+    navigator.mediaDevices.getUserMedia({
+        audio: true,
+    }).then((result) => {
+        $messageFormButton.removeAttribute('disabled');
+        $messageFormInput.value = '';
+        $messageFormInput.focus();
+
+        $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
+    });
 });
