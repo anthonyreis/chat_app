@@ -10,12 +10,11 @@ const {
     sendAudioMessage, 
     join, 
     disconnect,
-    playVideo
 } = require('./triggers');
 const youtubeSeach = require('./utils/getYoutubeUrl');
 const speechRecognition = require('./utils/speechRecognition');
 const routes = require('./routes/fileUpload');
-const downloadBinary = require('./utils/downloadVideo');
+const processDownload = require('./utils/proccessDownload');
 
 const app = express();
 app.use(cors());
@@ -59,7 +58,8 @@ io.on('connection', (socket) => {
 
     socket.on('botCommand', async (message) => {
         const videoId = await youtubeSeach(message);
-        await downloadBinary(videoId, socket);
+
+        await processDownload(videoId, socket);
     });
 });
 
