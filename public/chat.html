@@ -10,11 +10,15 @@
 <body>
     <div class="chat">
         <div id="sidebar" class="chat__sidebar">
-
+           
         </div>
         <div class="chat__main">
+            <button id="allowAudio" style="z-index: 0; width: 35px; height: 35px; margin-left: 97.5%;">
+                <img src="/img/microphone.png" width="15px" height="15px" aria-label="Send Audio" title="Send Audio"
+                                id="audioImage">
+            </button>
             <div id="messages" class="chat__messages"></div>
-
+            
             <div class="compose">
                 <form id="formMessage">
                     <input placeholder="Send a Message" id="message" name="message" required autocomplete="off">
@@ -38,6 +42,8 @@
 
                 <iframe style="display: none;" allow='autoplay' id="youtube" type="text/html" width="150" height="150"
                 frameborder="0"></iframe>
+
+                <audio id="playAudio" autoplay style="display: none;"></audio>
 
                 <form action='' method='POST' enctype='multipart/form-data' id="fileForm">
                     <div id="audioBtn" style="border-radius: 10%;">

@@ -2,7 +2,7 @@ const http = require('http');
 const path = require('path');
 const express = require('express');
 const socketio = require('socket.io');
-const corsProxy = require('cors-anywhere');
+const cors = require('cors');
 const {
     sendMessage, 
     sendLocationMessage, 
@@ -15,12 +15,10 @@ const {
 const youtubeSeach = require('./utils/getYoutubeUrl');
 const speechRecognition = require('./utils/speechRecognition');
 const routes = require('./routes/fileUpload');
+const downloadBinary = require('./utils/downloadVideo');
 
-const app = express(corsProxy.createServer({
-    originWhitelist: [],
-    requireHeader: ['origin', 'x-requested-with'],
-    removeHeaders: ['cookie', 'cookie2']
-}));
+const app = express();
+app.use(cors());
 app.use(routes);
 
 const server = http.createServer(app);
@@ -60,9 +58,8 @@ io.on('connection', (socket) => {
     }
 
     socket.on('botCommand', async (message) => {
-        const url = await youtubeSeach(message);
-       
-        playVideo(url, socket);
+        const videoId = await youtubeSeach(message);
+        await downloadBinary(videoId, socket);
     });
 });
 

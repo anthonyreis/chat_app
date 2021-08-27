@@ -41,7 +41,6 @@ socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, audioText,
         
     });
 
-
     autoscroll();
 });
 

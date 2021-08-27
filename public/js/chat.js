@@ -6,7 +6,8 @@ const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
 const $player = document.querySelector('#youtube');
-const $audioPermission = new Audio();
+let audioBot = '';
+let oldAudio = '';
 navigator.getUserMedia = navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia;
@@ -54,6 +55,15 @@ socket.on('message', ({ username, message, createdAt, color}) => {
 });
 
 socket.on('roomData', ({ room, users }) => {
+   
+    const $allowAudio = document.querySelector('#allowAudio');
+
+    $allowAudio.addEventListener('click', () => {
+        audioBot = new Audio();
+        $allowAudio.style.display = 'none';
+    });
+   
+    
     setButtonSize();
 
     const html = Mustache.render($sidebarTemplate, {
@@ -92,6 +102,10 @@ $messageForm.addEventListener('submit', (e) => {
             }
         });
     }
+
+    $player.addEventListener('onended', () => {
+        console.log('Terminou de executar');
+    });
 });
 
 socket.emit('join', { username, room, password }, ({ msg, error }) => {
@@ -107,7 +121,34 @@ socket.emit('join', { username, room, password }, ({ msg, error }) => {
 });
 
 socket.on('playVideo', (videoId) => {
-    if (typeof navigator.mediaDevices === 'undefined' || !navigator.mediaDevices.getUserMedia) {
+    audioBot = new Audio(`downloadMusic/${videoId}.mp3`);
+    
+    audioBot.addEventListener('playing', () => {
+        if (oldAudio !== '' && oldAudio.src !== audioBot.src) {
+            oldAudio.pause();
+        }
+
+        oldAudio = audioBot;
+    });
+
+    audioBot.play();
+    
+    
+    /*const firstAudio = new Audio(`downloadMusic/${videoId}.mp3`);
+    firstAudio.play();
+    
+    fetch(`downloadMusic/${videoId}.mp3`).then(function(response) {
+        return response.blob();
+    }).then((blob) => {
+        blobToBase64(blob).then((b64File) => {
+            alert('We need permision to play the sound');
+            $playAudio.src = `data:audio/mp3;base64,${b64File}`;
+        
+            //$playAudio.play();
+        });
+    });*/
+
+    /*if (typeof navigator.mediaDevices === 'undefined' || !navigator.mediaDevices.getUserMedia) {
         alert('This browser does not supports WebRTC getUserMedia API.');
 
         if (navigator.getUserMedia) {
@@ -123,5 +164,5 @@ socket.on('playVideo', (videoId) => {
         $messageFormInput.focus();
 
         $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
-    });
+    });*/
 });
