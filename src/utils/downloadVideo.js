@@ -5,22 +5,20 @@ let count = 0;
 
 const downloadBinary = async (videoId, socket) => {
     if (count === 0) {
-        await YoutubeDlWrap.downloadFromGithub(undefined, undefined, 'linux').then(() => {
-            const youtubeDlWrap = new YoutubeDlWrap('./youtube-dl');
+        const youtubeDlWrap = new YoutubeDlWrap('./public/youtube-dl');
     
-            fs.access(`./public/downloadMusic/${videoId}.mp3`, fs.F_OK, (err) => {
-                if (err) {
-                    setTimeout(async () => new Promise((resolve, reject) => {
-                        count++;
-                        youtubeDlWrap.execPromise([`https://www.youtube.com/watch?v=${videoId}`,
-                            '-f', 'best', '-o', `./public/downloadMusic/${videoId}.mp3`]).then(() => resolve(playVideo(videoId, socket)));
-                    }), 3000);
+        fs.access(`./public/downloadMusic/${videoId}.mp3`, fs.F_OK, (err) => {
+            if (err) {
+                setTimeout(async () => new Promise((resolve, reject) => {
+                    count++;
+                    youtubeDlWrap.execPromise([`https://www.youtube.com/watch?v=${videoId}`,
+                        '-f', 'best', '-o', `./public/downloadMusic/${videoId}.mp3`]).then(() => resolve(playVideo(videoId, socket)));
+                }), 3000);
 
-                    return null;
-                }
+                return null;
+            }
 
-                return playVideo(videoId, socket);
-            });
+            return playVideo(videoId, socket);
         });
     } else {
         const youtubeDlWrap = new YoutubeDlWrap('./youtube-dl');
