@@ -5,7 +5,7 @@ let count = 0;
 
 const downloadBinary = async (videoId, socket) => {
     if (count === 0) {
-        await YoutubeDlWrap.downloadFromGithub().then(() => {
+        await YoutubeDlWrap.downloadFromGithub(undefined, undefined, process.platform).then(() => {
             const youtubeDlWrap = new YoutubeDlWrap('./youtube-dl');
     
             fs.access(`./public/downloadMusic/${videoId}.mp3`, fs.F_OK, (err) => {

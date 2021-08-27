@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
     }
 
     socket.on('botCommand', async (message) => {
+        console.log('Disparou');
         const videoId = await youtubeSeach(message);
         await downloadBinary(videoId, socket);
     });
