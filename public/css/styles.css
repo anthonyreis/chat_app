@@ -258,8 +258,8 @@ embed {
 
 #file__download {
     position: relative;
-    bottom: 30px;
-    margin: 0 0 0 226px;
+    float: right;
+    left: 35px;
     opacity: 0.5;
 }
 

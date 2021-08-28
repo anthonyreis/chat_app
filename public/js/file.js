@@ -25,7 +25,7 @@ socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, created
         const lastChild = $messages.lastElementChild;
 
         const {0: img} = lastChild.getElementsByTagName('embed');
-
+        console.log(dimensions.h);
         if (ext === 'pdf') {
             child.style.marginLeft = '310px';
             lastChild.style.width = '400px';
@@ -33,6 +33,13 @@ socket.on('fileMessage', async ({ mimeType, username, id, fileName, ext, created
         } else if (dimensions.w < 200) {
             img.style.marginLeft = '110px';
         }
+        const newBottom = dimensions.h - dimensions.h / 3.5;
+        if (newBottom < 70) {
+            child.style.bottom = '70px';
+        } else {
+            child.style.bottom = dimensions.h - dimensions.h / 3.3 + 5 + 'px';
+        }
+        
     });
 
     const observer = new MutationObserver(function() {
