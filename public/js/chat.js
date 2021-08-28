@@ -49,20 +49,19 @@ socket.on('message', ({ username, message, createdAt, color}) => {
 
     lastChild.style.width = `${tamText}px`;
     lastChild.style.wordBreak = 'break-all';
-    lastChild.style.height = lastChild.clientHeight + 10 + 'px';
+    lastChild.style.height = lastChild.clientHeight - 10 + 'px';
 
     autoscroll();
 });
 
-socket.on('roomData', ({ room, users }) => {
-   
-    const $allowAudio = document.querySelector('#allowAudio');
+$('#modal')[0].addEventListener('click', (e) => {
+    $('#modal').modal('hide');
+    
+    audioBot = new Audio();
+});
 
-    $allowAudio.addEventListener('click', () => {
-        audioBot = new Audio();
-        $allowAudio.style.display = 'none';
-    });
-   
+socket.on('roomData', ({ room, users }) => {
+    $('#modal').modal('show'); 
     
     setButtonSize();
 

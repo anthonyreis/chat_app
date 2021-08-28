@@ -4,19 +4,35 @@
 <head>
     <title>Chat App</title>
     <link rel="icon" href="/img/favicon.png">
-    <link rel="stylesheet" href="/css/styles.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
     <div class="chat">
-        <div id="sidebar" class="chat__sidebar">
-           
-        </div>
+        <div id="sidebar" class="chat__sidebar"></div>
+  
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalLabel">Execução de Audio</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                Para poder utilizar o bot de música é necessário que você permita a execução de áudio na página.<br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Melhor não</button>
+                  <button type="button" class="btn btn-primary">Tudo bem</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         <div class="chat__main">
-            <button id="allowAudio" style="z-index: 0; width: 35px; height: 35px; margin-left: 97.5%;">
-                <img src="/img/microphone.png" width="15px" height="15px" aria-label="Send Audio" title="Send Audio"
-                                id="audioImage">
-            </button>
             <div id="messages" class="chat__messages"></div>
             
             <div class="compose">
@@ -34,7 +50,7 @@
                         <input id="upfile" type="file" name="upfile" value="upfile"
                             style="-moz-opacity:0; opacity: 0; z-index: 2;" onclick="this.value=null;" />
                         <div style="position: relative; z-index: 0;">
-                            <img src="/img/file.png" width="25em" height="25em" aria-label="Send File" title="Send File"
+                            <img src="/img/file.png" width="27em" height="29em" aria-label="Send File" title="Send File"
                                 id="fileImage">
                         </div>
                     </div>
@@ -50,7 +66,7 @@
                         <audio id="audioFile" class="audioFile" type="range" name="upfile" value="upfile"
                             style="-moz-opacity:0; opacity: 0; z-index: 2;" onclick="this.value=null;"></audio>
                         <div style="position: relative; z-index: 0;">
-                            <img src="/img/microphone.png" width="25em" height="25em" aria-label="Send Audio" title="Send Audio"
+                            <img src="/img/microphone.png" width="27em" height="29em" aria-label="Send Audio" title="Send Audio"
                                 id="audioImage">
                         </div>
                     </div>
@@ -73,7 +89,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    
     </script>
     <script src="/js/chat.js"></script>
     <script src="/js/autoscroll.js"></script>
