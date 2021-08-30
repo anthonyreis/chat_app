@@ -62,8 +62,6 @@ $('#modal')[0].addEventListener('click', () => {
 });
 
 socket.on('roomData', ({ room, users }) => {
-    setButtonSize();
-
     const html = Mustache.render($sidebarTemplate, {
         room: room.charAt(0).toUpperCase() + room.substr(1),
         videoName: $videoName === '' ? '' : $videoName.textContent,
@@ -174,5 +172,6 @@ socket.on('playVideo', (videoId, videoName) => {
 });
 
 window.addEventListener('load', () => {
+    setButtonSize();
     $('#modal').modal('show'); 
 });

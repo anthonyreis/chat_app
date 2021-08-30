@@ -3,11 +3,11 @@ const { addRoom, getRoom } = require('../utils/rooms');
 const { generateMessage } = require('../utils/messages');
 const rebuildHistory = require('../utils/rebuildHistory');
 
-const join = (username, room, cb, socket, io, password) => {
+const join = (username, room, cb, socket, io, password = '') => {
     const roomToEnter = getRoom(room);
-
-    if (roomToEnter && !roomToEnter.password && password) {
-        password = null;
+   
+    if (roomToEnter && roomToEnter.password === '' && password) {
+        password = '';
         cb({ msg: 'This room doesnt require a password' });
     } else if (roomToEnter && roomToEnter.password !== password) {
         return cb({ error: 'Password incorrect' });

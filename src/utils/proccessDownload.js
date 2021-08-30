@@ -19,6 +19,7 @@ const processDownload = async (videoId, socket, message) => {
                 for await (const chunk of child.stderr) {
                     error += chunk;
                 }
+                
                 const exitCode = await new Promise((resolve, reject) => {
                     child.on('close', resolve);
                 });
@@ -28,6 +29,7 @@ const processDownload = async (videoId, socket, message) => {
                 }
 
                 const {1: videoName} = data.split(/\.mp3/);
+
                 return playVideo(videoId, socket, videoName);
             }
            

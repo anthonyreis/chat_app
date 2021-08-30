@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
         socket.on('audioFile', async (audioBuffer) => {
             let audioText = '';
 
-            audioText = await speechRecognition(audioBuffer);
+            audioText = await speechRecognition(audioBuffer, socket.id);
 
             if (audioText.includes('subprocess error exit')) {
                 audioText = 'Não foi possivel transcrever o audio';

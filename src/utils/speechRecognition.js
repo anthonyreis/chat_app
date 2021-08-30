@@ -1,18 +1,16 @@
-const convertFile = require('./oggToWav');
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-const speechRecognition = async (buffer) => {
+const speechRecognition = async (buffer, id) => {
     try {
-        const file = await convertFile(buffer);
-
-        fs.writeFile('newFile.wav', file, function (err) {
+        
+        fs.writeFile(`public/audioSent/${id}.ogg`, buffer, function (err) {
             if (err) {
                 return err.message;
             }
         });
  
-        const child = spawn('python', ['src/utils/audioToText.py']);
+        const child = spawn('python', ['src/utils/audioToText.py', id]);
 
         let data = '';
 
@@ -30,7 +28,7 @@ const speechRecognition = async (buffer) => {
         });
         
         if (exitCode) {
-            fs.unlink('newFile.wav', (error) => {
+            fs.unlink(`public/audioSent/${id}.ogg`, (error) => {
                 if (error) {
                     throw new Error(`Houve um erro na remoção do arquivo, ${error}`);
                 }
@@ -41,6 +39,7 @@ const speechRecognition = async (buffer) => {
         return data;
 
     } catch (e) {
+        console.log(e.message);
         return e.message;
     }
 };
