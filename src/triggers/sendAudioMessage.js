@@ -1,13 +1,11 @@
 const {getUser} = require('../utils/users');
 const {generateAudioMessage} = require('../utils/messages');
 
-const sendAudioMessage = (file, mimeType, fileName, ext, audioText, socket) => {
+const sendAudioMessage = (file, mimeType, fileName, ext, audioText, socket, fileId) => {
     const user = getUser(socket.id);
-    const textId = Math.floor(new Date() / 1000);
 
-    socket.broadcast.to(user.room).emit('audioMessage', generateAudioMessage(user.username, file, fileName, mimeType, audioText, textId, ext));
-    socket.emit('audioMessage', generateAudioMessage(user.username, file, fileName, mimeType, ext, audioText, textId, 1));
-
+    socket.broadcast.to(user.room).emit('audioMessage', generateAudioMessage(user.username, user.room, file, fileName, mimeType, ext, audioText, fileId));
+    socket.emit('audioMessage', generateAudioMessage(user.username, user.room, file, fileName, mimeType, ext, audioText, fileId, 1));
 };
 
 module.exports = sendAudioMessage;

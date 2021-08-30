@@ -3,8 +3,8 @@ import os
 import sys
 from pydub import AudioSegment
 
-orig_song = f"public/audioSent/{sys.argv[1]}.ogg"
-dest_song = f"public/audioSent/{sys.argv[1]}.wav"
+orig_song = f"public/audioSent/{sys.argv[1]}{sys.argv[2]}.ogg"
+dest_song = f"public/audioSent/{sys.argv[1]}{sys.argv[2]}.wav"
 
 def convert_ogg_to_wav():
     song = AudioSegment.from_ogg(orig_song)
@@ -16,7 +16,7 @@ def RecognizeSpeech():
 
     recognizer.energy_threshold = 300
 
-    audio_file = sr.AudioFile(f"public/audioSent/{sys.argv[1]}.wav")
+    audio_file = sr.AudioFile(f"public/audioSent/{sys.argv[1]}{sys.argv[2]}.wav")
 
     with audio_file as source:
         recognizer.adjust_for_ambient_noise(source)
@@ -24,7 +24,7 @@ def RecognizeSpeech():
         result = recognizer.recognize_google(audio_data=audio_file, language='pt-BR')
         print(result)
     
-    os.remove(f"public/audioSent/{sys.argv[1]}.ogg")
+    os.remove(f"public/audioSent/{sys.argv[1]}{sys.argv[2]}.wav")
     
     return result
 

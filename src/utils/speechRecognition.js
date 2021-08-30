@@ -1,16 +1,15 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-const speechRecognition = async (buffer, id) => {
+const speechRecognition = async (buffer, id, fileId) => {
     try {
-        
-        fs.writeFile(`public/audioSent/${id}.ogg`, buffer, function (err) {
+        fs.writeFile(`public/audioSent/${id}${fileId}.ogg`, buffer, function (err) {
             if (err) {
                 return err.message;
             }
         });
  
-        const child = spawn('python', ['src/utils/audioToText.py', id]);
+        const child = spawn('python', ['src/utils/audioToText.py', id, fileId]);
 
         let data = '';
 
@@ -28,9 +27,9 @@ const speechRecognition = async (buffer, id) => {
         });
         
         if (exitCode) {
-            fs.unlink(`public/audioSent/${id}.ogg`, (error) => {
+            fs.unlink(`public/audioSent/${id}${fileId}.wav`, (error) => {
                 if (error) {
-                    throw new Error(`Houve um erro na remoção do arquivo, ${error}`);
+                    return null;
                 }
             });
             throw new Error(`subprocess error exit ${exitCode}, ${error}`);
@@ -39,7 +38,6 @@ const speechRecognition = async (buffer, id) => {
         return data;
 
     } catch (e) {
-        console.log(e.message);
         return e.message;
     }
 };

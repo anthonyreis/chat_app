@@ -41,14 +41,15 @@ io.on('connection', (socket) => {
 
         socket.on('audioFile', async (audioBuffer) => {
             let audioText = '';
+            const fileId = Math.floor(new Date() / 1000);
 
-            audioText = await speechRecognition(audioBuffer, socket.id);
+            audioText = await speechRecognition(audioBuffer, socket.id, fileId);
 
             if (audioText.includes('subprocess error exit')) {
                 audioText = 'Não foi possivel transcrever o audio';
             }
 
-            sendAudioMessage(audioBuffer.toString('base64'), 'audio/wav', 'audio.wav', '.wav', audioText, socket);
+            sendAudioMessage(audioBuffer.toString('base64'), 'audio/wav', `${socket.id}${fileId}`, '.wav', audioText, socket, fileId);
         });
 
         socket.on('disconnect', () => disconnect(io, socket));

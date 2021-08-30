@@ -9,8 +9,10 @@ const rebuildHistory = (username, room, socket) => {
                 socket.emit('message', info);
             } else if (info.type === 'locationMessage') {
                 socket.emit('locationMessage', info);
-            } else {
+            } else if (info.type === 'fileMessage') {
                 socket.emit('fileMessage', info);
+            } else {
+                socket.emit('audioMessage', info);
             }
         }
     });

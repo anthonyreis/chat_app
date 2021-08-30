@@ -13,7 +13,7 @@ $sendAudioContainer.addEventListener('mouseout', () => {
     $sendAudioContainer.style.backgroundColor = '#CCCBFB';
 });
 
-socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, audioText, createdAt, textId, color}) => {
+socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, audioText, createdAt, fileId, color}) => {
     const html = Mustache.render($audioTemplate, {
         file,
         mimeType,
@@ -22,15 +22,15 @@ socket.on('audioMessage', ({ username, file, fileName, mimeType, ext, audioText,
         ext,
         color,
         audioText,
-        textId,
+        fileId,
         createdAt: moment(createdAt).format('HH:mm')
     });
 
     $messages.insertAdjacentHTML('beforeend', html);
 
-    const $audioTextButton = document.querySelector(`[id='c-${textId}']`);
+    const $audioTextButton = document.querySelector(`[id='c-${fileId}']`);
 
-    const $audioText = document.querySelector(`[id='${textId}']`);
+    const $audioText = document.querySelector(`[id='${fileId}']`);
 
     $audioTextButton.addEventListener('click', () => {
         if ($audioText.style.display === 'none') {

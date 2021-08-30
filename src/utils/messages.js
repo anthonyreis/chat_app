@@ -64,7 +64,9 @@ const generateFileMessage = (username, room, mimeType, fileName, ext, flag) => {
     return msg;
 };
 
-const generateAudioMessage = (username, file, fileName, mimeType, ext, audioText, textId, flag) => {
+const generateAudioMessage = (username, room, file, fileName, mimeType, ext, audioText, fileId, flag) => {
+    const {id} = getUserByName(username, room);
+    
     const msg = {
         username,
         file,
@@ -72,10 +74,19 @@ const generateAudioMessage = (username, file, fileName, mimeType, ext, audioText
         fileName,
         ext,
         audioText,
-        textId,
+        id,
+        fileId,
         color: flag ? '#CCCBFB' : '#EEEDFD',
         createdAt: new Date().getTime()
     };
+
+    const history = getHistory();
+    const lastMsg = JSON.stringify({ ...history[history.length - 1], createdAt: 0 });
+    const newMsg = JSON.stringify({ ...msg, color: '#EEEDFD', createdAt: 0, type: 'audioMessage', room });
+
+    if (history.length === 0 || newMsg !== lastMsg) {
+        addHistory(msg, 'audioMessage', room);
+    }
 
     return msg;
 };
