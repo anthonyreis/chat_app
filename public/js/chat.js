@@ -6,6 +6,7 @@ const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
 const $player = document.querySelector('#youtube');
+let $videoName = '';
 let audioBot = '';
 let oldAudio = '';
 navigator.getUserMedia = navigator.getUserMedia ||
@@ -54,19 +55,18 @@ socket.on('message', ({ username, message, createdAt, color}) => {
     autoscroll();
 });
 
-$('#modal')[0].addEventListener('click', (e) => {
+$('#modal')[0].addEventListener('click', () => {
     $('#modal').modal('hide');
     
     audioBot = new Audio();
 });
 
 socket.on('roomData', ({ room, users }) => {
-    $('#modal').modal('show'); 
-    
     setButtonSize();
 
     const html = Mustache.render($sidebarTemplate, {
         room: room.charAt(0).toUpperCase() + room.substr(1),
+        videoName: $videoName === '' ? '' : $videoName.textContent,
         users
     });
 
@@ -119,8 +119,13 @@ socket.emit('join', { username, room, password }, ({ msg, error }) => {
     }
 });
 
-socket.on('playVideo', (videoId) => {
+socket.on('playVideo', (videoId, videoName) => {
     audioBot = new Audio(`downloadMusic/${videoId}.mp3`);
+    $videoName = document.querySelector('#videoName');
+
+    audioBot.addEventListener('ended', () => {
+        $videoName.style.display = 'none';
+    });
     
     audioBot.addEventListener('playing', () => {
         if (oldAudio !== '' && oldAudio.src !== audioBot.src) {
@@ -132,6 +137,8 @@ socket.on('playVideo', (videoId) => {
 
     audioBot.play();
     
+    $videoName.textContent = 'Reproduzindo: ' + videoName;
+    $videoName.style.display = 'initial';
     
     /*const firstAudio = new Audio(`downloadMusic/${videoId}.mp3`);
     firstAudio.play();
@@ -164,4 +171,8 @@ socket.on('playVideo', (videoId) => {
 
         $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
     });*/
+});
+
+window.addEventListener('load', () => {
+    $('#modal').modal('show'); 
 });

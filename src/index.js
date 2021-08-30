@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
     socket.on('botCommand', async (message) => {
         const videoId = await youtubeSeach(message);
 
-        await processDownload(videoId, socket);
+        await processDownload(videoId, socket, message);
     });
 });
 

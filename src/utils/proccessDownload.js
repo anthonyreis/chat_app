@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const { playVideo } = require('../triggers');
 const fs = require('fs');
 
-const processDownload = async (videoId, socket) => {
+const processDownload = async (videoId, socket, message) => {
     try {
         fs.access(`./public/downloadMusic/${videoId}.mp3`, fs.F_OK, async (err) => {
             if (err) {
@@ -26,11 +26,12 @@ const processDownload = async (videoId, socket) => {
                 if (exitCode) {
                     throw new Error(`subprocess error exit ${exitCode}, ${error}`);
                 }
-               
-                return playVideo(videoId, socket);
-            }
 
-            return playVideo(videoId, socket);
+                const {1: videoName} = data.split(/\.mp3/);
+                return playVideo(videoId, socket, videoName);
+            }
+           
+            return playVideo(videoId, socket, message.substr(11));
         });
 
     } catch (e) {
