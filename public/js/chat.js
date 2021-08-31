@@ -41,6 +41,7 @@ socket.on('message', ({ username, message, createdAt, color}) => {
     });
 
     const lastChild = $messages.lastElementChild;
+    const ttsButton = $messages.lastElementChild.querySelector('#tts');
 
     const text = lastChild.querySelectorAll('p')[1].textContent;
     let tamText = text.length * 10;
@@ -49,6 +50,8 @@ socket.on('message', ({ username, message, createdAt, color}) => {
     lastChild.style.width = `${tamText}px`;
     lastChild.style.wordBreak = 'break-all';
     lastChild.style.height = lastChild.clientHeight - 10 + 'px';
+   
+    ttsButton.style.bottom = parseInt(lastChild.style.height) / 1.4 + 'px';
 
     autoscroll();
 });
