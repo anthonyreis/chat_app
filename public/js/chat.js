@@ -5,7 +5,7 @@ const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
-const $player = document.querySelector('#youtube');
+const $playTTS = [];
 let $videoName = '';
 let audioBot = '';
 let oldAudio = '';
@@ -13,11 +13,9 @@ navigator.getUserMedia = navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia;
 
-// Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
 const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
 
-//Options
 const { username, room, password } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
 socket.on('message', ({ username, message, createdAt, color}) => {
@@ -29,12 +27,12 @@ socket.on('message', ({ username, message, createdAt, color}) => {
     });
 
     $messages.insertAdjacentHTML('beforeend', html);
-
-    const $playTTS = document.getElementsByClassName('tts');
+    
+    $playTTS.push($messages.lastElementChild.querySelector('#tts'));
    
-    $playTTS[$playTTS.length - 1].addEventListener('click', () => {
+    $playTTS[$playTTS.length - 1].addEventListener('click', (e) => {
         for (const item of $playTTS) {
-            if (item != $playTTS[$playTTS.length - 1]) {
+            if (item != e.target) {
                 item.style.display = 'none'; 
             }
         }
@@ -99,10 +97,6 @@ $messageForm.addEventListener('submit', (e) => {
             }
         });
     }
-
-    $player.addEventListener('onended', () => {
-        console.log('Terminou de executar');
-    });
 });
 
 socket.emit('join', { username, room, password }, ({ msg, error }) => {
@@ -137,41 +131,13 @@ socket.on('playVideo', (videoId, videoName) => {
     
     $videoName.textContent = 'Reproduzindo: ' + videoName;
     $videoName.style.display = 'initial';
-    
-    /*const firstAudio = new Audio(`downloadMusic/${videoId}.mp3`);
-    firstAudio.play();
-    
-    fetch(`downloadMusic/${videoId}.mp3`).then(function(response) {
-        return response.blob();
-    }).then((blob) => {
-        blobToBase64(blob).then((b64File) => {
-            alert('We need permision to play the sound');
-            $playAudio.src = `data:audio/mp3;base64,${b64File}`;
-        
-            //$playAudio.play();
-        });
-    });*/
-
-    /*if (typeof navigator.mediaDevices === 'undefined' || !navigator.mediaDevices.getUserMedia) {
-        alert('This browser does not supports WebRTC getUserMedia API.');
-
-        if (navigator.getUserMedia) {
-            alert('This browser seems supporting deprecated getUserMedia API.');
-        }
-    }
-
-    navigator.mediaDevices.getUserMedia({
-        audio: true,
-    }).then((result) => {
-        $messageFormButton.removeAttribute('disabled');
-        $messageFormInput.value = '';
-        $messageFormInput.focus();
-
-        $player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
-    });*/
 });
 
 window.addEventListener('load', () => {
     setButtonSize();
-    $('#modal').modal('show'); 
+    $('#modal').modal('show');
+    
+    setTimeout(() => {
+        document.querySelector('#okButton').focus();
+    }, 500);
 });
