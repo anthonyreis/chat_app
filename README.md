@@ -11,4 +11,4 @@
 * Envio de audio em tempo real, utilizando seu dispositivo de entrada;
 * Text To Speech das mensagens de texto, utilizando a API SpeechSynthesis; 
 * Speech To Text dos audios enviados em tempo real.
-* Bot de musica através do comando **./bot play \<nome da musica\>** || **./bot pause**
+* Bot de musica através dos comandos **./bot play \<nome da musica\>** e **./bot pause**
