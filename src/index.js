@@ -15,6 +15,7 @@ const youtubeSeach = require('./utils/getYoutubeUrl');
 const speechRecognition = require('./utils/speechRecognition');
 const routes = require('./routes/fileUpload');
 const processDownload = require('./utils/proccessDownload');
+const { getUser } = require('./utils/users');
 
 const app = express();
 app.use(cors());
@@ -58,9 +59,24 @@ io.on('connection', (socket) => {
     }
 
     socket.on('botCommand', async (message) => {
-        const videoId = await youtubeSeach(message);
+        const {1: command} = message.split(' ');
+        const user = getUser(socket.id);
 
-        await processDownload(videoId, socket, message);
+        if (command === 'play') {
+            const videoId = await youtubeSeach(message);
+
+            await processDownload(videoId, socket, message);
+
+            return null;
+        }
+
+        if (command === 'pause') {
+            socket.emit('stopAudio');
+            socket.broadcast.to(user.room).emit('stopAudio');
+
+            return null;
+        }
+        
     });
 });
 

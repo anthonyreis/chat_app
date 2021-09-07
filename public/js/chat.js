@@ -123,7 +123,7 @@ socket.on('playVideo', (videoId, videoName) => {
     });
     
     audioBot.addEventListener('playing', () => {
-        if (oldAudio !== '' && oldAudio.src !== audioBot.src) {
+        if (oldAudio !== '') {
             oldAudio.pause();
         }
 
@@ -134,6 +134,13 @@ socket.on('playVideo', (videoId, videoName) => {
     
     $videoName.textContent = 'Reproduzindo: ' + videoName;
     $videoName.style.display = 'initial';
+});
+
+socket.on('stopAudio', () => {
+    audioBot.pause();
+    $videoName.style.display = 'none';
+
+    audioBot = new Audio();
 });
 
 window.addEventListener('load', () => {
