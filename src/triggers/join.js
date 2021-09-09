@@ -26,8 +26,8 @@ const join = (username, room, cb, socket, io, password = '') => {
         rebuildHistory(username, room, socket);
     }
 
-    socket.emit('message', generateMessage('Admin', user.room, 'Welcome!'));
-    socket.broadcast.to(user.room).emit('message', generateMessage('Admin', user.room, `${user.username} has joined!`));
+    socket.emit('message', generateMessage('Admin', user.room, 'Bem vindo!'));
+    socket.broadcast.to(user.room).emit('message', generateMessage('Admin', user.room, `${user.username} se juntou a sala!`));
 
     io.to(user.room).emit('roomData', {
         room: user.room,

@@ -5,6 +5,7 @@ const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendAudioButton = document.querySelector('#audioFile');
 const $messages = document.querySelector('#messages');
+
 const $playTTS = [];
 let $videoName = '';
 let audioBot = '';
