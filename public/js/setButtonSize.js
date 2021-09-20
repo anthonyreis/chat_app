@@ -4,9 +4,10 @@ const $sendFileButton = document.querySelector('#upfile');
 const setButtonSize = () => {
     const sizes = getComputedStyle($sendFileContainer);
 
+    $sendFileButton.style.cursor = 'pointer';
     $sendFileButton.style.width = sizes.width;
     $sendFileButton.style.height = sizes.height;
-    $sendFileButton.style.right = '93px';
+    $sendFileButton.style.right = '95px';
     $sendFileButton.style.bottom = '25px';
     $sendFileButton.style.padding = sizes.padding;
     $sendFileButton.style.fontSize = sizes.fontSize;
